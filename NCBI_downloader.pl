@@ -4,7 +4,6 @@ use warnings;
 use Getopt::Long;
 use Data::Dumper;
 use FindBin;
-use lib $FindBin::Bin."/lib";
 use Parallel::ForkManager;
 use Cwd qw(abs_path);  
 

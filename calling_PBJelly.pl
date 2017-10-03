@@ -2,12 +2,6 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use FindBin;
-use lib $FindBin::Bin."/lib2";
-require myPackage;
-use lib $FindBin::Bin."/lib";
-
-require Cwd;
 use Cwd qw(abs_path); 
 
 my ($genome, $Pacbio_Reads, $outputDir, $nCPUs, $help, $nRounds, $PBJelly_path);
@@ -55,7 +49,7 @@ print "\tFile length: ".$lines." lines\n";
 my $nJobs = int($nCPUs/4);
 print "\tFile will be splitted into: $nJobs\n";
 my $block = $size/$nJobs;
-my $array_PacB_ref = myPackage::fastq_file_splitter($Pacbio_Reads, $block);
+my $array_PacB_ref = &fastq_file_splitter($Pacbio_Reads, $block);
 
 # generate a protocol in xml format
 my $xml_file = $outputDir."/jellyProtocol_";
@@ -239,6 +233,61 @@ sub check_id {
 	close (F); return $ok;
 }
 
+sub fastq_file_splitter {
 
-# perl /users/jfsanchez/scripts/jfsh_scripts/calling_PBJelly.pl -genome /users/jfsanchez/cleanReads/6.Gap_Filling/test_PBSuite_toyData/lambda.fasta -Pacbio_Reads /users/jfsanchez/cleanReads/6.Gap_Filling/test_PBSuite_toyData/filtered_subreads.fastq -dir /users/jfsanchez/cleanReads/6.Gap_Filling/test_PBSuite_toyData/ -nCPUs 16 -r 4 -PBJelly /users/jfsanchez/JFSH_software/PacBio_Reads/PBSuite_15.8.24/bin/
-# qsub_Serial_q0107 /users/jfsanchez/scripts/jfsh_scripts/CPU_blocker.sh 
+	my $file = $_[0];
+	my $block = $_[1];
+
+	if (!$block) {$block = 10000000;}
+	
+	# Splits fasta file and takes into account to add the whole sequence if it is broken
+	open (FH, "<$file") or die "Could not open source file. $!";
+	print "\n\nSplitting file into blocks of $block characters...\n";
+	my $j = 0; 
+	my @files;
+	
+	while (1) {
+		my $chunk;
+		print "########################################################\n";
+		print "Processing block $j...\n";
+		my $file_name; my $extension;
+		if ($file =~ /(.*)\.(.*)/) {
+			$file_name = $1;
+			$extension = $2;
+		}
+		my $block_file = $file_name."_part-".$j."_tmp.".$extension;
+		print "Dumping into: ".$block_file."\n";
+		push (@files, $block_file);
+		
+		open(OUT, ">$block_file") or die "Could not open destination file";
+		if (!eof(FH)) { read(FH, $chunk,$block);  
+			#if ($j > 0) { $chunk = ">".$chunk; }
+			#print "\n## Chunk1! ##\n"; print $chunk; print "## Chunk! ##\n";
+			print OUT $chunk;
+		} ## Print the amount of chars	
+		
+		if (!eof(FH)) { 
+			$chunk = <FH>; 
+			print OUT $chunk; 
+			#print "\n## Chunk2! Complete the line... ##\n"; print $chunk; print "## Chunk! ##\n";
+		} ## print the whole line if it is broken	
+	
+		last if eof(FH);
+	
+		while (1) {
+			my $line = <FH>; 		
+			if ($line =~ /^\+$/) {
+				print OUT $line;
+				my $line2 = <FH>; 
+				print OUT $line2;
+				last;
+			} else {
+				print OUT $line;
+		}}
+		$j++;
+		close(OUT); last if eof(FH);
+	} 
+	close(FH);
+	
+	return \@files;
+}
