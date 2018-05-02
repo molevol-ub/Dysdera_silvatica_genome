@@ -57,16 +57,10 @@ close (F);
 
 
 __DATA__
+17_Haplogynae	LREC
+15_araneomorphae	Smimosarum,LHES,LREC,PTEP	
 13_araneae	Agen,LHES,LREC,Smimosarum,PTEP
-12_scorpion	Mmartensi,Cscult
-11_acari	Emaynei,Iscapularis,Turticae,Moccidentalis
 10_arachnida	Agen,LHES,LREC,Smimosarum,Mmartensi,Cscult,Emaynei,Iscapularis,Turticae,Moccidentalis,PTEP
-9_xiphosura	LPOL
 8_chelicerata	LPOL,Agen,LHES,LREC,Smimosarum,Mmartensi,Cscult,Emaynei,Iscapularis,Turticae,Moccidentalis,PTEP
-7_hexapoda	Dmel,Bmori,Phumanus 
-6_crustacea	Dpul
-5_myriapoda	Smartitima
-4_tardigrada	Hdujardini
 3_arthropoda	Dmel,Bmori,Phumanus,Dpul,Smartitima,Hdujardini,LPOL,Agen,LHES,LREC,Smimosarum,Mmartensi,Cscult,Emaynei,Iscapularis,Turticae,Moccidentalis,PTEP
-2_nematoda	Celegans
 1_ecdysozooa	Celegans,Dmel,Bmori,Phumanus,Dpul,Smartitima,Hdujardini,LPOL,Agen,LHES,LREC,Smimosarum,Mmartensi,Cscult,Emaynei,Iscapularis,Turticae,Moccidentalis,PTEP
