@@ -1,7 +1,0 @@
-Ecdysozooa 15989
-Arthropoda 12216
-Chelicerata 2232
-Arachnida 2612
-Araneae 2304
-Dsilvatica 3484
-Other 315
