@@ -34,6 +34,17 @@ sub sending_command {
         my $id = &get_job_id(\$string);
 	return $id;
 }
+sub get_number_lines {
+	my $file = $_[0];
+	my $n=0;
+	open (F, "$file");
+	while(<F>) {
+		$n++;
+	}
+	close(F);
+	return $n;
+}
+
 sub get_size {
 	my $size = -s $_[0]; #To get only size
 	return $size;
@@ -69,4 +80,35 @@ sub fasta_file_splitter {
 	return (\@files);
 }
 
+sub file_splitter {
+
+        my $file = $_[0];
+        my $block = $_[1];
+        my $ext = $_[2]; # fasta, fastq, loci, fa
+
+        my @files;
+
+        # Splits a file such a sam or whatever file that could be read for each line
+        open (FH, "<$file") or die "Could not open file $file [DOMINO.pm:file_splitter]";
+        print "+ Splitting file $file into blocks of $block characters...\n";
+        my $j = 0;
+        while (1) {
+        my $chunk;
+        my @tmp = split (".".$ext, $file);
+                my $file_name = $tmp[0];
+
+                my $block_file = $file_name."_part-".$j."_tmp.".$ext;
+                print "\t- Printing file: ".$block_file."\n";
+        push (@files, $block_file);
+        open(OUT, ">$block_file") or die "Could not open destination file [DOMINO.pm:file_splitter]";
+        $j++;
+        if (!eof(FH)) { read(FH, $chunk,$block);  print OUT $chunk; } ## Print the amount of chars
+        if (!eof(FH)) { $chunk = <FH>; print OUT $chunk; } ## print the whole line if it is broken
+        close(OUT); last if eof(FH);
+        }
+        close(FH);
+        return (\@files);
+}
+
 1;
+

@@ -3,9 +3,8 @@ use strict;
 use warnings;
 use Data::Dumper;
 use FindBin;
-use lib $FindBin::Bin."/lib2";
-require myModules;
 use lib $FindBin::Bin."/lib";
+require myModules;
 require Parallel::ForkManager;
 
 my $coverage=$ARGV[0]; 
@@ -15,10 +14,10 @@ my $plot=$ARGV[3];
 my $CPU=$ARGV[4];
 
 if (!@ARGV) {
-	print "Given a mean coverage determines regions with greater spected coverage:
+	print "\n\nGiven a mean coverage determines regions with greater spected coverage:
 	- Coverage: 2.5x standard deviation
 	- Length: Minimun length of reference to use
-	\nUsage:\nperl $0 coverage file length output_plot CPU\n";
+	\n\nUsage:\nperl $0 coverage file length output_file CPU\n\n";
 	exit();
 }
 
