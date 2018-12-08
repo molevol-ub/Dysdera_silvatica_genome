@@ -1,0 +1,3 @@
+[submodule "Functional_Genome_Annotation"]
+	path = Functional_Genome_Annotation
+	url = https://github.com/JFsanchezherrero/Functional_Genome_Annotation
