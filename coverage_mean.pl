@@ -130,7 +130,7 @@ while (<IDS>) {
 			}
 			$previous_position = $line[1];
 		}
-		close(F); system("rm $out");
+		close(F); #system("rm $out");
 
 		my $total_repeats = scalar keys %repeat;
 		foreach my $keys (sort keys %repeat) {
@@ -143,12 +143,12 @@ while (<IDS>) {
 	} else {
 		#print "$id is shorter than expected\n";
 	} 
-	system("rm $file_out");
+	#system("rm $file_out");
 	$pm_SPLIT_ids->finish($count); # pass an exit code to finish
 }
 $pm_SPLIT_ids->wait_all_children; 
 close (IDS); close (PLOT);
-system("rm $concat_ids");
+#system("rm $concat_ids");
 print "\nFinish checking coverage of repeats...\n";
 
 
