@@ -18,6 +18,9 @@ if (!@ARGV) {
 	- Coverage: 5x standard deviation
 	- Length: Minimun length of reference to use
 	\n\nUsage:\nperl $0 coverage file length output_file CPU\n\n";
+	
+	&print_definition();
+
 	exit();
 }
 
@@ -84,13 +87,13 @@ while (<IDS>) {
 			} 
 		}
 		close(FILE); 
-		
+		close (OUT);		
 		my $previous_position=0; my $initial_entry = 0; my $init=0; my %repeat; my $count = 1;
-		open (F, "$file_out");
+		open (F, "$out");
 		while (<F>){
+			#print $_;	
 			chomp;
 			my @line = split("\t", $_);
-
 			unless ($initial_entry == 0) {
 				my $initialize=0;
 				if ($previous_position + 1 == $line[1]) { 		$initialize=0;
@@ -107,18 +110,16 @@ while (<IDS>) {
 				} else {
 					$initialize=1;
 				}					
-				
 				if ($initialize) {
 					$count++;
 					$init=0;
-				}
-			}
-			
+			}}			
 			if ($init==0) {
 				$init++; 
 				
 				if ($count > 1) {
 					my $before = $count -1;
+					if (!$repeat{"repeat_".$before}{"intra_end"}) { $before = $before - 1; $count = $count - 1;}
 					$repeat{"repeat_".$count}{"INTER_start"} = $repeat{"repeat_".$before}{"intra_end"} + 1;
 					$repeat{"repeat_".$count}{"INTER_end"} = $line[1]-1;
 					$repeat{"repeat_".$count}{"intra_start"} = $line[1];
@@ -133,11 +134,11 @@ while (<IDS>) {
 			$previous_position = $line[1];
 		}
 		close(F); close (OUT);
-		#system("rm $out");
+		system("rm $out");
 		#print Dumper \%repeat;
 
 		my $total_repeats = scalar keys %repeat;
-		if ($total_repeats > 2) {
+		if ($total_repeats > 1) {
 			my $count = 0;
 			foreach my $keys (sort keys %repeat) {
 				$count++;
@@ -153,6 +154,7 @@ while (<IDS>) {
 		}}} else {
 			# 1
 			foreach my $keys (sort keys %repeat) {
+				if (!$repeat{$keys}{"intra_end"}) {next;}
 				my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
 				print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$repeat{$keys}{"intra_start"}."\t".$repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
 				## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
@@ -161,12 +163,12 @@ while (<IDS>) {
 	} else {
 		#print "$id is shorter than expected\n";
 	} 
-	#system("rm $file_out");
+	system("rm $file_out");
 	$pm_SPLIT_ids->finish($count); # pass an exit code to finish
 }
 $pm_SPLIT_ids->wait_all_children; 
 close (IDS); close (PLOT);
-#system("rm $concat_ids");
+system("rm $concat_ids");
 print "\nFinish checking coverage of repeats...\n";
 
 
@@ -180,8 +182,8 @@ Symbol * = high island coverage position
 Symbol - = normal position
 
 Example:
-#--------****************--------------------****************---------------
-#		1|2	 intra		3|4		inter		5|6	 intra	    7|8
+#--------****************-----------------****************-------------------
+#	1|2 intra      3|4   inter	5|6   intra      7|8
 
 1: Nothing
 2: Init intra-repeat
