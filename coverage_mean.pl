@@ -83,14 +83,14 @@ while (<IDS>) {
 				print OUT $_."\n";
 			} 
 		}
-		close(FILE); close (OUT);
+		close(FILE); 
 		
 		my $previous_position=0; my $initial_entry = 0; my $init=0; my %repeat; my $count = 1;
-		open (F, "$out");
+		open (F, "$file_out");
 		while (<F>){
 			chomp;
 			my @line = split("\t", $_);
-			
+
 			unless ($initial_entry == 0) {
 				my $initialize=0;
 				if ($previous_position + 1 == $line[1]) { 		$initialize=0;
@@ -107,14 +107,17 @@ while (<IDS>) {
 				} else {
 					$initialize=1;
 				}					
+				
 				if ($initialize) {
 					$count++;
 					$init=0;
-			}}
+				}
+			}
 			
 			if ($init==0) {
 				$init++; 
-				if ($count > 2) {
+				
+				if ($count > 1) {
 					my $before = $count -1;
 					$repeat{"repeat_".$count}{"INTER_start"} = $repeat{"repeat_".$before}{"intra_end"} + 1;
 					$repeat{"repeat_".$count}{"INTER_end"} = $line[1]-1;
@@ -124,21 +127,36 @@ while (<IDS>) {
 					$repeat{"repeat_".$count}{"INTER_end"}=$line[1]-1;
 					$repeat{"repeat_".$count}{"intra_start"}=$line[1];
 					$initial_entry++;
-				}
-			} else {
+			}} else {
 				$repeat{"repeat_".$count}{"intra_end"}=$line[1];
 			}
 			$previous_position = $line[1];
 		}
-		close(F); #system("rm $out");
+		close(F); close (OUT);
+		#system("rm $out");
+		#print Dumper \%repeat;
 
 		my $total_repeats = scalar keys %repeat;
-		foreach my $keys (sort keys %repeat) {
-			my $INTER_gap = int($repeat{$keys}{"INTER_end"} - $repeat{$keys}{"INTER_start"});
-			my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
-			print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t".$repeat{$keys}{"INTER_start"}."\t".$repeat{$keys}{"INTER_end"}."\t".$INTER_gap."\t".$repeat{$keys}{"intra_start"}."\t".$repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
-			## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
-		}
+		if ($total_repeats > 2) {
+			my $count = 0;
+			foreach my $keys (sort keys %repeat) {
+				$count++;
+				if ($count == 1) {
+					my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
+					print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$repeat{$keys}{"intra_start"}."\t".$repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
+					## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
+				} else {
+					my $INTER_gap = int($repeat{$keys}{"INTER_end"} - $repeat{$keys}{"INTER_start"});
+					my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
+					print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t".$repeat{$keys}{"INTER_start"}."\t".$repeat{$keys}{"INTER_end"}."\t".$INTER_gap."\t".$repeat{$keys}{"intra_start"}."\t".$repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
+					## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
+		}}} else {
+			# 1
+			foreach my $keys (sort keys %repeat) {
+				my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
+				print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$repeat{$keys}{"intra_start"}."\t".$repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
+				## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
+		}} 
 		#print Dumper \%repeat;
 	} else {
 		#print "$id is shorter than expected\n";
@@ -153,5 +171,31 @@ print "\nFinish checking coverage of repeats...\n";
 
 
 
+sub print_definition {
 
+print "
+#####
+## Definition:
+Symbol * = high island coverage position
+Symbol - = normal position
 
+Example:
+#--------****************--------------------****************---------------
+#		1|2	 intra		3|4		inter		5|6	 intra	    7|8
+
+1: Nothing
+2: Init intra-repeat
+3: End intra-repeat
+intra-repeat1_length = 3 - 2
+
+4: Init inter-repeat
+5: End inter-repeat
+inter-repeat_length = 5 - 4
+
+6: Init intra-repeat2
+7: End intra-repeat2
+intra-repeat2_length = 7 - 6
+
+8: Nothing
+"
+}
