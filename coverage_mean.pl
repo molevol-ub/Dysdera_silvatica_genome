@@ -115,14 +115,14 @@ while (<IDS>) {
 					$init=0;
 			}}			
 			if ($init==0) {
-				$init++; 
-				
+				$init++;				
 				if ($count > 1) {
 					my $before = $count -1;
 					if (!$repeat{"repeat_".$before}{"intra_end"}) { $before = $before - 1; $count = $count - 1;}
 					$repeat{"repeat_".$count}{"INTER_start"} = $repeat{"repeat_".$before}{"intra_end"} + 1;
 					$repeat{"repeat_".$count}{"INTER_end"} = $line[1]-1;
 					$repeat{"repeat_".$count}{"intra_start"} = $line[1];
+					$repeat{"repeat_".$count}{"intra_end"} = $line[1];
 				} else {
 					$repeat{"repeat_".$count}{"INTER_start"}=0;
 					$repeat{"repeat_".$count}{"INTER_end"}=$line[1]-1;
@@ -135,28 +135,38 @@ while (<IDS>) {
 		}
 		close(F); close (OUT);
 		system("rm $out");
-		#print Dumper \%repeat;
+		print Dumper \%repeat;
 
-		my $total_repeats = scalar keys %repeat;
+		my %new_repeat;
+		foreach my $keys (sort keys %repeat) {
+			my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
+			if ($intra_gap < 10) { next; 
+			} else {
+				$new_repeat{$keys} = %{ $repeat{$keys} };
+			}
+		}
+
+
+		my $total_repeats = scalar keys %new_repeat;
 		if ($total_repeats > 1) {
 			my $count = 0;
-			foreach my $keys (sort keys %repeat) {
+			foreach my $keys (sort keys %new_repeat) {
 				$count++;
 				if ($count == 1) {
-					my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
-					print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$repeat{$keys}{"intra_start"}."\t".$repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
+					my $intra_gap = int($new_repeat{$keys}{"intra_end"} - $new_repeat{$keys}{"intra_start"});
+					print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$new_repeat{$keys}{"intra_start"}."\t".$new_repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
 					## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
 				} else {
-					my $INTER_gap = int($repeat{$keys}{"INTER_end"} - $repeat{$keys}{"INTER_start"});
-					my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
-					print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t".$repeat{$keys}{"INTER_start"}."\t".$repeat{$keys}{"INTER_end"}."\t".$INTER_gap."\t".$repeat{$keys}{"intra_start"}."\t".$repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
+					my $INTER_gap = int($new_repeat{$keys}{"INTER_end"} - $new_repeat{$keys}{"INTER_start"});
+					my $intra_gap = int($new_repeat{$keys}{"intra_end"} - $new_repeat{$keys}{"intra_start"});
+					print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t".$new_repeat{$keys}{"INTER_start"}."\t".$new_repeat{$keys}{"INTER_end"}."\t".$INTER_gap."\t".$new_repeat{$keys}{"intra_start"}."\t".$new_repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
 					## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
 		}}} else {
 			# 1
-			foreach my $keys (sort keys %repeat) {
-				if (!$repeat{$keys}{"intra_end"}) {next;}
-				my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
-				print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$repeat{$keys}{"intra_start"}."\t".$repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
+			foreach my $keys (sort keys %new_repeat) {
+				if (!$new_repeat{$keys}{"intra_end"}) {next;}
+				my $intra_gap = int($new_repeat{$keys}{"intra_end"} - $new_repeat{$keys}{"intra_start"});
+				print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$new_repeat{$keys}{"intra_start"}."\t".$new_repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
 				## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
 		}} 
 		#print Dumper \%repeat;
