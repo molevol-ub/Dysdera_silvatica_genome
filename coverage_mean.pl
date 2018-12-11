@@ -84,10 +84,13 @@ while (<IDS>) {
 			my @line = split("\t", $_);
 			if ($line[2] >= $max_coverage) { 
 				print OUT $_."\n";
-			} 
+		}}
+		close(FILE); close (OUT);
+		if (-r -s -e $out) { ## continue
+		} else {
+			$pm_SPLIT_ids->finish($count); # pass an exit code to finish
+			## file is empty
 		}
-		close(FILE); 
-		close (OUT);		
 		my $previous_position=0; my $initial_entry = 0; my $init=0; my %repeat; my $count = 1;
 		open (F, "$out");
 		while (<F>){
@@ -137,16 +140,17 @@ while (<IDS>) {
 		system("rm $out");
 		print Dumper \%repeat;
 
+		### discard bad repeats
 		my %new_repeat;
 		foreach my $keys (sort keys %repeat) {
+			if (!$repeat{$keys}{"intra_end"}) {next;}
 			my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
 			if ($intra_gap < 10) { next; 
 			} else {
-				$new_repeat{$keys} = %{ $repeat{$keys} };
-			}
-		}
-
-
+				$new_repeat{$keys} = $repeat{$keys};
+		}}
+		
+		## print repeats
 		my $total_repeats = scalar keys %new_repeat;
 		if ($total_repeats > 1) {
 			my $count = 0;
