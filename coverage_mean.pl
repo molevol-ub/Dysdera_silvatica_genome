@@ -88,7 +88,9 @@ while (<IDS>) {
 		close(FILE); close (OUT);
 		if (-r -s -e $out) { ## continue
 		} else {
-			$pm_SPLIT_ids->finish($count); # pass an exit code to finish
+			system("rm $out"); 
+			system ("rm $file_out");
+	                $pm_SPLIT_ids->finish($count); # pass an exit code to finish
 			## file is empty
 		}
 		my $previous_position=0; my $initial_entry = 0; my $init=0; my %repeat; my $count = 1;
@@ -138,7 +140,7 @@ while (<IDS>) {
 		}
 		close(F); close (OUT);
 		system("rm $out");
-		print Dumper \%repeat;
+		#print Dumper \%repeat;
 
 		### discard bad repeats
 		my %new_repeat;
