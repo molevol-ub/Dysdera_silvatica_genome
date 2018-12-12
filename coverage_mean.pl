@@ -179,7 +179,7 @@ while (<IDS>) {
 		if ($total_repeats > 1) {
 			my $counter = 0;
 			foreach my $keys (sort keys %new_repeat) {
-				if ($keys eq "repeat_0") {
+				if (!$new_repeat{$keys}{"intra_end"} || $keys eq "repeat_1") {
 					my $intra_gap = int($new_repeat{$keys}{"intra_end"} - $new_repeat{$keys}{"intra_start"});
 					print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$new_repeat{$keys}{"intra_start"}."\t".$new_repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
 					## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
