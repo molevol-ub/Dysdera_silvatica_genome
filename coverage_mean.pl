@@ -12,15 +12,15 @@ my $file=$ARGV[1];
 my $length = $ARGV[2];
 my $plot=$ARGV[3];
 my $CPU=$ARGV[4];
+my $ids_file=$ARGV[5];
 
 if (!@ARGV) {
 	print "\n\nGiven a mean coverage determines regions with greater spected coverage:
 	- Coverage: 5x standard deviation
 	- Length: Minimun length of reference to use
-	\n\nUsage:\nperl $0 coverage file length output_file CPU\n\n";
+	\n\nUsage:\nperl $0 coverage file length output_file CPU [ids_file]\n\n";
 	
 	&print_definition();
-
 	exit();
 }
 
@@ -28,33 +28,41 @@ my $max_coverage = $coverage*5;
 ## to get mean do: awk '{ sum +=$3; n++ } END { if (n > 0) print sum / n; }' Pacbio_CSS_PE.sorted.coverage.txt
 ## Result: 36.7009 mean coverage Pacbio vs. Paired-end ##
 
-## splits into subsets to determine the ids
-my $ref_array_count = myModules::get_size($file);
-print "Stats for file: $file\n";
-print "Chars: $ref_array_count\n";
-my $block = int($ref_array_count/$CPU);
-my $files_ref = myModules::file_splitter($file,$block,"txt");
-
-## Check subsets to determine the ids
-my @files = @{$files_ref};
-my $count_fasta_files_split = 0;
-my $total_fasta_files_split = scalar @files;
-my $pm_SPLIT_FILE =  new Parallel::ForkManager($CPU); 
-for (my $i=0; $i < scalar @files; $i++) {
-	$count_fasta_files_split++;
-	print "\n+ Checking file: [$count_fasta_files_split/$total_fasta_files_split]\n";
-	my $pid = $pm_SPLIT_FILE->start($i) and next;
-	my $subset = $files[$i];
-	my $temp_file = "temp_$i";
-	system("awk '{print \$1}' $subset | sort | uniq > $temp_file; rm $subset");
-	$pm_SPLIT_FILE->finish($i); # pass an exit code to finish
+## parse ids
+my $concat_ids;
+if ($ids_file) {
+	$concat_ids = $ids_file;
+	
+} else {
+	## splits into subsets to determine the ids
+	my $ref_array_count = myModules::get_size($file);
+	print "Stats for file: $file\n";
+	print "Chars: $ref_array_count\n";
+	my $block = int($ref_array_count/$CPU);
+	my $files_ref = myModules::file_splitter($file,$block,"txt");
+	
+	## Check subsets to determine the ids
+	my @files = @{$files_ref};
+	my $count_fasta_files_split = 0;
+	my $total_fasta_files_split = scalar @files;
+	my $pm_SPLIT_FILE =  new Parallel::ForkManager($CPU); 
+	for (my $i=0; $i < scalar @files; $i++) {
+		$count_fasta_files_split++;
+		print "\n+ Checking file: [$count_fasta_files_split/$total_fasta_files_split]\n";
+		my $pid = $pm_SPLIT_FILE->start($i) and next;
+		my $subset = $files[$i];
+		my $temp_file = "temp_$i";
+		system("awk '{print \$1}' $subset | sort | uniq > $temp_file; rm $subset");
+		$pm_SPLIT_FILE->finish($i); # pass an exit code to finish
+	}
+	$pm_SPLIT_FILE->wait_all_children; 
+	
+	## merge results
+	$concat_ids = "ids_concat.txt";
+	print "+ Concatenate ids into $concat_ids\n";
+	system("cat temp_* | sort | uniq > $concat_ids; rm temp_*");
 }
-$pm_SPLIT_FILE->wait_all_children; 
 
-## merge results
-my $concat_ids = "ids_concat.txt";
-print "+ Concatenate ids into $concat_ids\n";
-system("cat temp_* | sort | uniq > $concat_ids; rm temp_*");
 my $total_ids = myModules::get_number_lines($concat_ids);
 open (IDS, $concat_ids);
 open (PLOT, ">$plot");
@@ -144,7 +152,7 @@ while (<IDS>) {
 
 		### discard bad repeats
 		my %new_repeat;
-		foreach my $keys (sort keys %repeat) {
+		foreach my $keys (sort {$a<=>$b} keys %repeat) {
 			if (!$repeat{$keys}{"intra_end"}) {next;}
 			my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
 			if ($intra_gap < 10) { next; 
