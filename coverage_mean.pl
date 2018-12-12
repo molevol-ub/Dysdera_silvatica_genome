@@ -142,8 +142,11 @@ while (<IDS>) {
 					if (!$repeat{"repeat_".$before}{"intra_end"}) { 
 						$before = $before - 1; $count = $count - 1;
 					}
-					
-					$repeat{"repeat_".$count}{"INTER_start"} = $repeat{"repeat_".$before}{"intra_end"} + 1;
+					if (!$repeat{"repeat_".$before}{"intra_end"}) {
+						$repeat{"repeat_".$count}{"INTER_start"} = 0;							
+					} else {
+						$repeat{"repeat_".$count}{"INTER_start"} = $repeat{"repeat_".$before}{"intra_end"} + 1;
+					}
 					$repeat{"repeat_".$count}{"INTER_end"} = $line[1]-1;
 					$repeat{"repeat_".$count}{"intra_start"} = $line[1];
 					$repeat{"repeat_".$count}{"intra_end"} = $line[1];
