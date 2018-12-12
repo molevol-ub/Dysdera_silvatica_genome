@@ -30,8 +30,14 @@ my $max_coverage = $coverage*5;
 
 ## parse ids
 my $concat_ids;
+my $file2;
+
 if ($ids_file) {
 	$concat_ids = $ids_file;
+	
+	## pregrep all ids into a temp file
+	$file2 = $concat_ids.".tmp";
+	system("grep -w -f $ids_file $file > $file2");
 	
 } else {
 	## splits into subsets to determine the ids
@@ -61,8 +67,10 @@ if ($ids_file) {
 	$concat_ids = "ids_concat.txt";
 	print "+ Concatenate ids into $concat_ids\n";
 	system("cat temp_* | sort | uniq > $concat_ids; rm temp_*");
+	$file2 = $file;
 }
 
+#
 my $total_ids = myModules::get_number_lines($concat_ids);
 open (IDS, $concat_ids);
 open (PLOT, ">$plot");
@@ -80,7 +88,7 @@ while (<IDS>) {
 	print "\tChecking: $count / $total_ids\r";
 	my $file_out = "temp_".$count;
 	my $out = "temp_".$count.".out";
-	system("grep -w $id $file > $file_out");
+	system("grep -w $id $file2 > $file_out");
 	
 	## retrieve coverage for each sample
 	my $length_seq = myModules::get_number_lines($file_out);
@@ -131,7 +139,10 @@ while (<IDS>) {
 				$init++;				
 				if ($count > 1) {
 					my $before = $count -1;
-					if (!$repeat{"repeat_".$before}{"intra_end"}) { $before = $before - 1; $count = $count - 1;}
+					if (!$repeat{"repeat_".$before}{"intra_end"}) { 
+						$before = $before - 1; $count = $count - 1;
+					}
+					
 					$repeat{"repeat_".$count}{"INTER_start"} = $repeat{"repeat_".$before}{"intra_end"} + 1;
 					$repeat{"repeat_".$count}{"INTER_end"} = $line[1]-1;
 					$repeat{"repeat_".$count}{"intra_start"} = $line[1];
@@ -152,7 +163,10 @@ while (<IDS>) {
 
 		### discard bad repeats
 		my %new_repeat;
-		foreach my $keys (sort {$a<=>$b} keys %repeat) {
+		my $total_repeats_tmp = scalar keys %repeat;
+		
+		for (my $k=0; $k < scalar $total_repeats_tmp; $k++) {
+			my $keys = "repeat_".$k;
 			if (!$repeat{$keys}{"intra_end"}) {next;}
 			my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
 			if ($intra_gap < 10) { next; 
@@ -163,10 +177,9 @@ while (<IDS>) {
 		## print repeats
 		my $total_repeats = scalar keys %new_repeat;
 		if ($total_repeats > 1) {
-			my $count = 0;
+			my $counter = 0;
 			foreach my $keys (sort keys %new_repeat) {
-				$count++;
-				if ($count == 1) {
+				if ($keys eq "repeat_0") {
 					my $intra_gap = int($new_repeat{$keys}{"intra_end"} - $new_repeat{$keys}{"intra_start"});
 					print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$new_repeat{$keys}{"intra_start"}."\t".$new_repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
 					## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
