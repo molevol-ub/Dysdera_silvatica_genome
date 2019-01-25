@@ -40,11 +40,11 @@ median_AED_F1 = median(AED_F1$V2)
 cumfreq_AED_F1 <- get_Freq(AED_F1)
 
 ## file_train_R1
-#file2check_F2 <- "R_scripts/AED_statistics/AED_stats_R2_final.txt"
-#AED_F2 <- read.table(file2check_F2)
-#mean_AED_F2 = mean(AED_F2$V2)
-#median_AED_F2 = median(AED_F2$V2)
-#cumfreq_AED_F2 <- get_Freq(AED_F2)
+file2check_F2 <- "R_scripts/AED_statistics/AED_stats_R2_final.txt"
+AED_F2 <- read.table(file2check_F2)
+mean_AED_F2 = mean(AED_F2$V2)
+median_AED_F2 = median(AED_F2$V2)
+cumfreq_AED_F2 <- get_Freq(AED_F2)
 
 #################
 ## set plot
@@ -62,7 +62,7 @@ legend(
 )
 lines(breaks,cumfreq_AED_R2,type="l",lty=2,col="dodgerblue")
 lines(breaks,cumfreq_AED_F1,type="l",lty=1,col="chartreuse")
-#lines(breaks,cumfreq_AED_F2,type="l",lty=1,col="darkolivegreen")
+lines(breaks,cumfreq_AED_F2,type="l",lty=1,col="darkolivegreen")
 
 ###########
 ## EXTRA

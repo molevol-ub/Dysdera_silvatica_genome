@@ -103,11 +103,10 @@ while (<IDS>) {
 		}}
 		close(FILE); close (OUT);
 		if (-r -s -e $out) { ## continue
-		} else {
+		} else { ## file is empty
 			system("rm $out"); 
 			system ("rm $file_out");
-	                $pm_SPLIT_ids->finish($count); # pass an exit code to finish
-			## file is empty
+	        $pm_SPLIT_ids->finish($count); # pass an exit code to finish
 		}
 		my $previous_position=0; my $initial_entry = 0; my $init=0; my %repeat; my $count = 1;
 		open (F, "$out");
@@ -117,7 +116,8 @@ while (<IDS>) {
 			my @line = split("\t", $_);
 			unless ($initial_entry == 0) {
 				my $initialize=0;
-				if ($previous_position + 1 == $line[1]) { 		$initialize=0;
+				if ($previous_position + 1 == $line[1]) {
+					$initialize=0;
 				} elsif ($previous_position + 2 == $line[1]) {	$initialize=0;
 				} elsif ($previous_position + 3 == $line[1]) {	$initialize=0;
 				} elsif ($previous_position + 4 == $line[1]) {	$initialize=0;
@@ -128,13 +128,15 @@ while (<IDS>) {
 				} elsif ($previous_position + 9 == $line[1]) {	$initialize=0;
 				} elsif ($previous_position + 10 == $line[1]) {	$initialize=0;
 				} elsif ($previous_position + 11 == $line[1]) {	$initialize=0;
+				
 				} else {
 					$initialize=1;
 				}					
 				if ($initialize) {
 					$count++;
 					$init=0;
-			}}			
+				}			
+			}			
 			if ($init==0) {
 				$init++;				
 				if ($count > 1) {
@@ -155,9 +157,12 @@ while (<IDS>) {
 					$repeat{"repeat_".$count}{"INTER_end"}=$line[1]-1;
 					$repeat{"repeat_".$count}{"intra_start"}=$line[1];
 					$initial_entry++;
-			}} else {
+				}
+			
+			} else {
 				$repeat{"repeat_".$count}{"intra_end"}=$line[1];
 			}
+		
 			$previous_position = $line[1];
 		}
 		close(F); close (OUT);
@@ -170,13 +175,22 @@ while (<IDS>) {
 		
 		for (my $k=0; $k < scalar $total_repeats_tmp; $k++) {
 			my $keys = "repeat_".$k;
+			#print $keys."\n";
 			if (!$repeat{$keys}{"intra_end"}) {next;}
 			my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
-			if ($intra_gap < 10) { next; 
+			if ($intra_gap < 700) { ## set value user input and loop for results
+				my $next_it; my $next_keys;
+				$next_it = $k + 1;	
+				$next_keys = "repeat_".$next_it;
+				$repeat{$next_keys}{"INTER_start"} = $repeat{$keys}{"INTER_start"};
+				#print "Next ($next_it = $next_keys): ".$repeat{$next_keys}{"INTER_start"}."\n";
+				next; 
 			} else {
-				$new_repeat{$keys} = $repeat{$keys};
-		}}
-		
+				#$new_repeat{$keys} = $repeat{$keys};
+				$new_repeat{$keys} = $repeat{$keys}
+			}
+		}
+		#print Dumper \%new_repeat;
 		## print repeats
 		my $total_repeats = scalar keys %new_repeat;
 		if ($total_repeats > 1) {
@@ -211,6 +225,8 @@ close (IDS); close (PLOT);
 system("rm $concat_ids");
 print "\nFinish checking coverage of repeats...\n";
 
+#system("cat $plot");
+
 
 
 sub print_definition {
@@ -223,7 +239,7 @@ Symbol - = normal position
 
 Example:
 #--------****************-----------------****************-------------------
-#	1|2 intra      3|4   inter	5|6   intra      7|8
+#	    1|2 intra      3|4   inter	5|6   intra      7|8
 
 1: Nothing
 2: Init intra-repeat
