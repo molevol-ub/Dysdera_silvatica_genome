@@ -12,13 +12,14 @@ my $file=$ARGV[1];
 my $length = $ARGV[2];
 my $plot=$ARGV[3];
 my $CPU=$ARGV[4];
-my $ids_file=$ARGV[5];
+my $intra_gap_var = $ARGV[5];
+my $ids_file=$ARGV[6];
 
 if (!@ARGV) {
 	print "\n\nGiven a mean coverage determines regions with greater spected coverage:
 	- Coverage: 5x standard deviation
 	- Length: Minimun length of reference to use
-	\n\nUsage:\nperl $0 coverage file length output_file CPU [ids_file]\n\n";
+	\n\nUsage:\nperl $0 coverage file length output_file CPU intra_gap_cutoff [ids_file]\n\n";
 	
 	&print_definition();
 	exit();
@@ -31,6 +32,9 @@ my $max_coverage = $coverage*5;
 ## parse ids
 my $concat_ids;
 my $file2;
+
+## intra_gap_cutoff
+my @intra_gap_cutoff = split(",", $intra_gap_var);
 
 if ($ids_file) {
 	$concat_ids = $ids_file;
@@ -168,52 +172,62 @@ while (<IDS>) {
 		close(F); close (OUT);
 		system("rm $out");
 		#print Dumper \%repeat;
-
-		### discard bad repeats
-		my %new_repeat;
-		my $total_repeats_tmp = scalar keys %repeat;
 		
-		for (my $k=0; $k < scalar $total_repeats_tmp; $k++) {
-			my $keys = "repeat_".$k;
-			#print $keys."\n";
-			if (!$repeat{$keys}{"intra_end"}) {next;}
-			my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
-			if ($intra_gap < 700) { ## set value user input and loop for results
-				my $next_it; my $next_keys;
-				$next_it = $k + 1;	
-				$next_keys = "repeat_".$next_it;
-				$repeat{$next_keys}{"INTER_start"} = $repeat{$keys}{"INTER_start"};
-				#print "Next ($next_it = $next_keys): ".$repeat{$next_keys}{"INTER_start"}."\n";
-				next; 
-			} else {
-				#$new_repeat{$keys} = $repeat{$keys};
-				$new_repeat{$keys} = $repeat{$keys}
-			}
-		}
-		#print Dumper \%new_repeat;
-		## print repeats
-		my $total_repeats = scalar keys %new_repeat;
-		if ($total_repeats > 1) {
-			my $counter = 0;
-			foreach my $keys (sort keys %new_repeat) {
-				if (!$new_repeat{$keys}{"intra_end"} || $keys eq "repeat_1") {
-					my $intra_gap = int($new_repeat{$keys}{"intra_end"} - $new_repeat{$keys}{"intra_start"});
-					print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$new_repeat{$keys}{"intra_start"}."\t".$new_repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
-					## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
+		## for loop variable min intra gap
+		for (my $i=0; $i < scalar @intra_gap_cutoff; $i++) {
+		
+			### discard bad repeats
+			my %new_repeat;
+			my $total_repeats_tmp = scalar keys %repeat;
+			my $new_id = 0;
+		
+			for (my $k=0; $k < scalar $total_repeats_tmp; $k++) {
+				my $keys = "repeat_".$k;
+				#print $keys."\n";
+				if (!$repeat{$keys}{"intra_end"}) {next;}
+				my $intra_gap = int($repeat{$keys}{"intra_end"} - $repeat{$keys}{"intra_start"});
+			
+				if ($intra_gap < $intra_gap_cutoff[$i]) { ## set value user input and loop for results
+					my $next_it; my $next_keys;
+					$next_it = $k + 1;	
+					$next_keys = "repeat_".$next_it;
+					$repeat{$next_keys}{"INTER_start"} = $repeat{$keys}{"INTER_start"};
+					#print "Next ($next_it = $next_keys): ".$repeat{$next_keys}{"INTER_start"}."\n";
+					next; 
+			
 				} else {
-					my $INTER_gap = int($new_repeat{$keys}{"INTER_end"} - $new_repeat{$keys}{"INTER_start"});
+					$new_id++;
+					my $new_key = "repeat_".$new_id;
+					#$new_repeat{$keys} = $repeat{$keys};
+					$new_repeat{$new_key} = $repeat{$keys}
+			
+				}
+			}
+			#print Dumper \%new_repeat;
+			## print repeats
+			my $total_repeats = scalar keys %new_repeat;
+			if ($total_repeats > 1) {
+				my $counter = 0;
+				foreach my $keys (sort keys %new_repeat) {
+					if (!$new_repeat{$keys}{"intra_end"} || $keys eq "repeat_1") {
+						my $intra_gap = int($new_repeat{$keys}{"intra_end"} - $new_repeat{$keys}{"intra_start"});
+						print PLOT $id."\t".$intra_gap_cutoff[$i]."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$new_repeat{$keys}{"intra_start"}."\t".$new_repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
+						## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
+					} else {
+						my $INTER_gap = int($new_repeat{$keys}{"INTER_end"} - $new_repeat{$keys}{"INTER_start"});
+						my $intra_gap = int($new_repeat{$keys}{"intra_end"} - $new_repeat{$keys}{"intra_start"});
+						print PLOT $id."\t".$intra_gap_cutoff[$i]."\t".$length_seq."\t".$total_repeats."\t".$keys."\t".$new_repeat{$keys}{"INTER_start"}."\t".$new_repeat{$keys}{"INTER_end"}."\t".$INTER_gap."\t".$new_repeat{$keys}{"intra_start"}."\t".$new_repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
+						## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
+			}}} else {
+				# 1
+				foreach my $keys (sort keys %new_repeat) {
+					if (!$new_repeat{$keys}{"intra_end"}) {next;}
 					my $intra_gap = int($new_repeat{$keys}{"intra_end"} - $new_repeat{$keys}{"intra_start"});
-					print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t".$new_repeat{$keys}{"INTER_start"}."\t".$new_repeat{$keys}{"INTER_end"}."\t".$INTER_gap."\t".$new_repeat{$keys}{"intra_start"}."\t".$new_repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
+					print PLOT $id."\t".$intra_gap_cutoff[$i]."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$new_repeat{$keys}{"intra_start"}."\t".$new_repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
 					## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
-		}}} else {
-			# 1
-			foreach my $keys (sort keys %new_repeat) {
-				if (!$new_repeat{$keys}{"intra_end"}) {next;}
-				my $intra_gap = int($new_repeat{$keys}{"intra_end"} - $new_repeat{$keys}{"intra_start"});
-				print PLOT $id."\t".$length_seq."\t".$total_repeats."\t".$keys."\t-\t-\t-\t".$new_repeat{$keys}{"intra_start"}."\t".$new_repeat{$keys}{"intra_end"}."\t".$intra_gap."\n";
-				## 		    ids		length_contig	total_repeats		id_repeat			inter_start						inter_end					gap_inter					intra_start						intra_end					intra_gap
-		}} 
-		#print Dumper \%repeat;
+			}} 
+			#print Dumper \%repeat;
+		}	
 	} else {
 		#print "$id is shorter than expected\n";
 	} 
