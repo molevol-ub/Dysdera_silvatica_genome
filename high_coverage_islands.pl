@@ -81,15 +81,17 @@ open (PLOT, ">$plot");
 
 ## start checking each sequence
 my $pm_SPLIT_ids =  new Parallel::ForkManager($CPU);
-my $count = 0;
 while (<IDS>) {
-	$count++;
+	
+	my $id=$_;
+	my @name_id = split("sequence_", $id);
+	my $count = $name_id[1];
 	
 	## send thread
 	my $pid = $pm_SPLIT_ids->start($count) and next;
 	chomp;
-	my $id=$_;
-	print "\tChecking: $count / $total_ids\r";
+
+	#print "\tChecking: $count / $total_ids\r";
 	my $file_out = "temp_".$count;
 	my $out = "temp_".$count.".out";
 	system("grep -w $id $file2 > $file_out");
@@ -112,7 +114,7 @@ while (<IDS>) {
 			system ("rm $file_out");
 	        $pm_SPLIT_ids->finish($count); # pass an exit code to finish
 		}
-		my $previous_position=0; my $initial_entry = 0; my $init=0; my %repeat; my $count = 1;
+		my $previous_position=0; my $initial_entry = 0; my $init=0; my %repeat; my $countID = 1;
 		open (F, "$out");
 		while (<F>){
 			#print $_;	
@@ -137,34 +139,34 @@ while (<IDS>) {
 					$initialize=1;
 				}					
 				if ($initialize) {
-					$count++;
+					$countID++;
 					$init=0;
 				}			
 			}			
 			if ($init==0) {
 				$init++;				
-				if ($count > 1) {
-					my $before = $count -1;
+				if ($countID > 1) {
+					my $before = $countID -1;
 					if (!$repeat{"repeat_".$before}{"intra_end"}) { 
-						$before = $before - 1; $count = $count - 1;
+						$before = $before - 1; $countID = $countID - 1;
 					}
 					if (!$repeat{"repeat_".$before}{"intra_end"}) {
-						$repeat{"repeat_".$count}{"INTER_start"} = 0;							
+						$repeat{"repeat_".$countID}{"INTER_start"} = 0;							
 					} else {
-						$repeat{"repeat_".$count}{"INTER_start"} = $repeat{"repeat_".$before}{"intra_end"} + 1;
+						$repeat{"repeat_".$countID}{"INTER_start"} = $repeat{"repeat_".$before}{"intra_end"} + 1;
 					}
-					$repeat{"repeat_".$count}{"INTER_end"} = $line[1]-1;
-					$repeat{"repeat_".$count}{"intra_start"} = $line[1];
-					$repeat{"repeat_".$count}{"intra_end"} = $line[1];
+					$repeat{"repeat_".$countID}{"INTER_end"} = $line[1]-1;
+					$repeat{"repeat_".$countID}{"intra_start"} = $line[1];
+					$repeat{"repeat_".$countID}{"intra_end"} = $line[1];
 				} else {
-					$repeat{"repeat_".$count}{"INTER_start"}=0;
-					$repeat{"repeat_".$count}{"INTER_end"}=$line[1]-1;
-					$repeat{"repeat_".$count}{"intra_start"}=$line[1];
+					$repeat{"repeat_".$countID}{"INTER_start"}=0;
+					$repeat{"repeat_".$countID}{"INTER_end"}=$line[1]-1;
+					$repeat{"repeat_".$countID}{"intra_start"}=$line[1];
 					$initial_entry++;
 				}
 			
 			} else {
-				$repeat{"repeat_".$count}{"intra_end"}=$line[1];
+				$repeat{"repeat_".$countID}{"intra_end"}=$line[1];
 			}
 		
 			$previous_position = $line[1];

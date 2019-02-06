@@ -15,7 +15,7 @@ while (<DATA>) {
 	}
 }
 close(DATA);
-#print Dumper \%taxonomy;
+print Dumper \%taxonomy;
 
 ##
 open (F, $file2);
