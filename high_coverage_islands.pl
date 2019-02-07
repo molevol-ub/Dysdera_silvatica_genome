@@ -79,22 +79,30 @@ my $total_ids = myModules::get_number_lines($concat_ids);
 open (IDS, $concat_ids);
 open (PLOT, ">$plot");
 
+print "+ Parsing results...\n";
+
 ## start checking each sequence
 my $pm_SPLIT_ids =  new Parallel::ForkManager($CPU);
+my $count = 0;
 while (<IDS>) {
 	
+	chomp;
 	my $id=$_;
+	
+	print "Check: $id\n";
 	my @name_id = split("sequence_", $id);
-	my $count = $name_id[1];
+	my $count_tmp = $name_id[1];
+	$count++;
 	
 	## send thread
 	my $pid = $pm_SPLIT_ids->start($count) and next;
-	chomp;
-
+	
 	#print "\tChecking: $count / $total_ids\r";
-	my $file_out = "temp_".$count;
-	my $out = "temp_".$count.".out";
-	system("grep -w $id $file2 > $file_out");
+	my $file_out = "temp_".$count_tmp;
+	my $out = "temp_".$count_tmp.".out";
+	my $call = "grep -w ".$id." ".$file2." > ".$file_out;
+	print $call."\n";
+	system($call);
 	
 	## retrieve coverage for each sample
 	my $length_seq = myModules::get_number_lines($file_out);
