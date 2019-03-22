@@ -1,7 +1,7 @@
 # 3D Exploded Pie Chart
 library(plotrix)
 ## data
-taxa <- read.table("tax_IDs.txt")
+taxa <- read.table("/Users/jfsh/Google Drive/Universitat_Barcelona_MolEvol/Dysdera_Silvatica_Notes/paper_Genome/Draft_Dsil/2nd_submission/other/subset_proteins/subsets/all_ids-subset-Annotation_sort.txt")
 label <- taxa$V1
 slices_taxa <- taxa$V2
 pct_taxa <- round(slices_taxa/sum(slices_taxa)*100,digits = 2)
@@ -11,8 +11,8 @@ pie3D(slices_taxa,labels=label,
       explode=0.2, 
       radius=1, 
       labelcex = 1.5, 
-      labelrad = 1.4,
+      labelrad = 1.1,
       height = 0.05,
-      theta = 1.15,
+      theta = 1.1,
       shade = 0.5,
-      start=1)
+      start=1.5)
