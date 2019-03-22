@@ -2,7 +2,6 @@
 ## sh ./Functional_Genome_Annotation/scripts/get_mean_eAED.sh maker_proteins.fasta out
 setwd("/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/")
 
-
 ## Frequency function
 get_Freq <- function(table2check) {
   
@@ -46,23 +45,66 @@ mean_AED_F2 = mean(AED_F2$V2)
 median_AED_F2 = median(AED_F2$V2)
 cumfreq_AED_F2 <- get_Freq(AED_F2)
 
+mean_AED_F1
+mean_AED_F2
+mean_AED_R1
+mean_AED_R2
+
+write.csv(cumfreq_AED_F1, file = "/Users/jfsh/Desktop/tmp_2/F1.csv", )
+write.csv(cumfreq_AED_F2, file = "/Users/jfsh/Desktop/tmp_2/F2.csv")
+write.csv(cumfreq_AED_R1, file = "/Users/jfsh/Desktop/tmp_2/R1.csv")
+write.csv(cumfreq_AED_R2, file = "/Users/jfsh/Desktop/tmp_2/R2.csv")
+
+## subset proteins >100aa
+#file2check_subset_Length <- "R_scripts/AED_statistics/AED_stats_Subset.txt"
+#AED_subset_Length <- read.table(file2check_subset_Length)
+#mean_AED_subset_Length = mean(AED_subset_Length$V2)
+#median_AED_subset_Length = median(AED_subset_Length$V2)
+#cumfreq_AED_subset_Length <- get_Freq(AED_subset_Length)
+
+## subset proteins InterPro
+file2check_subset_InterPro <- "R_scripts/AED_statistics/AED_stats_Interpro.txt"
+AED_subset_InterPro <- read.table(file2check_subset_InterPro)
+mean_AED_subset_InterPro = mean(AED_subset_InterPro$V2)
+median_AED_subset_InterPro = median(AED_subset_InterPro$V2)
+cumfreq_AED_subset_InterPro <- get_Freq(AED_subset_InterPro)
+
+## subset proteins both
+#file2check_subset_both <- "R_scripts/AED_statistics/AED_stats_longer300nt_Interpro.txt"
+#AED_subset_both <- read.table(file2check_subset_both)
+#mean_AED_subset_both = mean(AED_subset_both$V2)
+#median_AED_subset_both = median(AED_subset_both$V2)
+#cumfreq_AED_subset_both <- get_Freq(AED_subset_both)
+
+## subset proteins v1
+#file2check_v1 <- "R_scripts/AED_statistics/AED_stats_V1.txt"
+#AED_subset_v1 <- read.table(file2check_v1)
+#mean_AED_subset_v1 = mean(AED_subset_v1$V2)
+#median_AED_subset_v1 = median(AED_subset_v1$V2)
+#cumfreq_AED_subset_v1 <- get_Freq(AED_subset_v1)
+
 #################
 ## set plot
 breaks = seq(0, 1, by=0.02) 
-plot(breaks,cumfreq_AED_R1,ylab="Cummulative Fraction of Annotation", xlab="AED value", lty=2, type="l",col="deepskyblue", cex.lab=1.5, cex.axis=1.5, cex.main=1.5)
+plot(breaks,cumfreq_AED_R1,ylab="Cummulative Fraction of Annotation", xlab="AED value", lwd = 3, lty=3, type="l",col="deepskyblue", cex.lab=1.5, cex.axis=1.5, cex.main=1.5)
 abline(h=0.5, lty=4, col="grey")
 legend(
   "bottomright", ## POSITION 
-  c("50%", "","R1", "R2", "","F1","F2"), # puts text in the legend 
-  lty=c(4,0,2,2,0,1,1),               # gives the legend appropriate symbols (lines)
+  #c("50%", "","R1", "R2", "","F1","F2","","Sub.Length", "Sub.InterPro", "Sub.Both", "v1"), # puts text in the legend 
+  c("50%", "","R1", "R2", "","F1","F2","","Functional"), # puts text in the legend 
+  lty=c(4,0,3,3,0,1,1,0,4),               # gives the legend appropriate symbols (lines)
   lwd=c(2), ## width
   cex = 1.3,
-  col=c("grey","","deepskyblue","dodgerblue","","chartreuse","darkolivegreen"
-  ) # gives the legend lines the correct color
+  col=c("grey","","deepskyblue","dodgerblue","","chartreuse","darkolivegreen","", "red") # gives the legend lines the correct color
 )
-lines(breaks,cumfreq_AED_R2,type="l",lty=2,col="dodgerblue")
-lines(breaks,cumfreq_AED_F1,type="l",lty=1,col="chartreuse")
-lines(breaks,cumfreq_AED_F2,type="l",lty=1,col="darkolivegreen")
+lines(breaks,cumfreq_AED_R2,type="l", lwd=3,lty=3,col="dodgerblue")
+lines(breaks,cumfreq_AED_F1,type="l", lwd=3,lty=1,col="chartreuse")
+lines(breaks,cumfreq_AED_F2,type="l", lwd=3,lty=1,col="darkolivegreen")
+lines(breaks,cumfreq_AED_subset_InterPro,type="l", lwd=3,lty=4,col="red")
+
+#lines(breaks,cumfreq_AED_subset_Length,type="l", lwd=3,lty=4,col="red")
+#lines(breaks,cumfreq_AED_subset_both,type="l", lwd=3,lty=4,col="black")
+#lines(breaks,cumfreq_AED_subset_v1,type="l", lwd=3,lty=4,col="purple")
 
 ###########
 ## EXTRA
