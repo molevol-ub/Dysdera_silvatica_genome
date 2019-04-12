@@ -13,13 +13,13 @@ my $length = $ARGV[2];
 my $plot=$ARGV[3];
 my $CPU=$ARGV[4];
 my $intra_gap_var = $ARGV[5];
-my $ids_file=$ARGV[6];
+my $length_file =  $ARGV[6];
 
 if (!@ARGV) {
 	print "\n\nGiven a mean coverage determines regions with greater spected coverage:
 	- Coverage: 5x standard deviation
 	- Length: Minimun length of reference to use
-	\n\nUsage:\nperl $0 coverage file length output_file CPU intra_gap_cutoff [ids_file]\n\n";
+	\n\nUsage:\nperl $0 coverage file length output_file CPU intra_gap_cutoff length_file\n\n";
 	
 	&print_definition();
 	exit();
@@ -31,55 +31,53 @@ my $max_coverage = $coverage*5;
 
 ## parse ids
 my $concat_ids;
-my $file2;
-
 ## intra_gap_cutoff
 my @intra_gap_cutoff = split(",", $intra_gap_var);
 
-if ($ids_file) {
-	$concat_ids = $ids_file;
+## splits into subsets to determine the ids
+my $ref_array_count = myModules::get_size($file);
+print "Stats for file: $file\n";
+print "Chars: $ref_array_count\n";
+my $block = int($ref_array_count/$CPU);
+my $files_ref = myModules::file_splitter($file,$block,"txt");
 	
-	## pregrep all ids into a temp file
-	$file2 = $concat_ids.".tmp";
-	system("grep -w -f $ids_file $file > $file2");
-	
-} else {
-	## splits into subsets to determine the ids
-	my $ref_array_count = myModules::get_size($file);
-	print "Stats for file: $file\n";
-	print "Chars: $ref_array_count\n";
-	my $block = int($ref_array_count/$CPU);
-	my $files_ref = myModules::file_splitter($file,$block,"txt");
-	
-	## Check subsets to determine the ids
-	my @files = @{$files_ref};
-	my $count_fasta_files_split = 0;
-	my $total_fasta_files_split = scalar @files;
-	my $pm_SPLIT_FILE =  new Parallel::ForkManager($CPU); 
-	for (my $i=0; $i < scalar @files; $i++) {
-		$count_fasta_files_split++;
-		print "\n+ Checking file: [$count_fasta_files_split/$total_fasta_files_split]\n";
-		my $pid = $pm_SPLIT_FILE->start($i) and next;
-		my $subset = $files[$i];
-		my $temp_file = "temp_$i";
-		system("awk '{print \$1}' $subset | sort | uniq > $temp_file; rm $subset");
-		$pm_SPLIT_FILE->finish($i); # pass an exit code to finish
-	}
-	$pm_SPLIT_FILE->wait_all_children; 
-	
-	## merge results
-	$concat_ids = "ids_concat.txt";
-	print "+ Concatenate ids into $concat_ids\n";
-	system("cat temp_* | sort | uniq > $concat_ids; rm temp_*");
-	$file2 = $file;
+## Check subsets to determine the ids
+my @files = @{$files_ref};
+my $count_fasta_files_split = 0;
+my $total_fasta_files_split = scalar @files;
+my $pm_SPLIT_FILE =  new Parallel::ForkManager($CPU); 
+for (my $i=0; $i < scalar @files; $i++) {
+	$count_fasta_files_split++;
+	print "\n+ Checking file: [$count_fasta_files_split/$total_fasta_files_split]\n";
+	my $pid = $pm_SPLIT_FILE->start($i) and next;
+	my $subset = $files[$i];
+	my $temp_file = "temp_$i";
+	system("awk '{print \$1}' $subset | sort | uniq > $temp_file; rm $subset");
+	$pm_SPLIT_FILE->finish($i); # pass an exit code to finish
 }
+$pm_SPLIT_FILE->wait_all_children; 
 
+## merge results
+$concat_ids = "ids_concat.txt";
+print "+ Concatenate ids into $concat_ids\n";
+system("cat temp_* | sort | uniq > $concat_ids; rm temp_*");
 #
 my $total_ids = myModules::get_number_lines($concat_ids);
 open (IDS, $concat_ids);
 open (PLOT, ">$plot");
 
 print "+ Parsing results...\n";
+print "+ Get lengths...\n";
+my %length_results;
+open(LEN, "<$length_file");
+while (<LEN>) {
+	chomp;
+	my @array = split("\t", $_);
+	$length_results{$array[0]} = $array[1];
+}
+close(LEN);
+
+print "+ Parsing coverage...\n";
 
 ## start checking each sequence
 my $pm_SPLIT_ids =  new Parallel::ForkManager($CPU);
@@ -100,12 +98,12 @@ while (<IDS>) {
 	#print "\tChecking: $count / $total_ids\r";
 	my $file_out = "temp_".$count_tmp;
 	my $out = "temp_".$count_tmp.".out";
-	my $call = "grep -w ".$id." ".$file2." > ".$file_out;
+	my $call = "grep -w ".$id." ".$file." > ".$file_out;
 	print $call."\n";
 	system($call);
 	
 	## retrieve coverage for each sample
-	my $length_seq = myModules::get_number_lines($file_out);
+	my $length_seq = $length_results{$id};
 	if ($length_seq >= $length) { ## filter by given length
 		open (FILE, "$file_out");
 		open (OUT, ">$out");
