@@ -1,4 +1,4 @@
-DATA <- read.table(file="/Users/jfsh/Google Drive/Universitat_Barcelona_MolEvol/Dysdera_Silvatica_Notes/paper_Genome/Draft_Dsil/2nd_submission/Tables/DATA.txt", sep="\t", header = TRUE)
+DATA <- read.table(file="HCR/HCR_annotation_summary_2.5x.txt", sep="\t", header = TRUE)
 
 colnames(DATA)
 rownames(DATA)
@@ -26,7 +26,7 @@ legend("topright", legend = DATAcol, fill = coul)
 
 
 
-DATA_5x <- read.table(file="/Users/jfsh/Google Drive/Universitat_Barcelona_MolEvol/Dysdera_Silvatica_Notes/paper_Genome/Draft_Dsil/2nd_submission/Tables/DATA_5x.txt", sep="\t", header = TRUE)
+DATA_5x <- read.table(file="HCR/HCR_annotation_summary_5x.txt", sep="\t", header = TRUE)
 colnames(DATA_5x)
 rownames(DATA_5x)
 

@@ -31,10 +31,10 @@ hist_plot = function(X, COLOR, TITLE, MIN ) {
 }
 
 ## load results
-intra_25 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/intra_2.5x_coverage.HCI_150.txt")
-inter_25 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/inter_2.5x_coverage.HCI_150.txt")
-intra_5 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/intra_5x_coverage.HCI_150.txt")
-inter_5 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/inter_5x_coverage.HCI_150.txt")
+intra_25 <- read.table(file="HCR/length_intra_2.5x_coverage.HCR_150.txt")
+inter_25 <- read.table(file="HCR/length_inter_2.5x_coverage.HCR_150.txt")
+intra_5 <- read.table(file="HCR/length_intra_5x_coverage.HCR_150.txt")
+inter_5 <- read.table(file="HCR/length_inter_5x_coverage.HCR_150.txt")
 
 # Set graphical parameter `mfrow`
 par(mfrow = c(2, 2)) 
@@ -44,15 +44,15 @@ hist_plot(intra_5, "blue", "INTRA 5x 150", 0)
 hist_plot(inter_5, "red", "INTER 5x 150", 0)
 
 ###### intra vs inter 2.5x mean splitted
-intra_25_150 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/intra_2.5x_coverage.HCI_150.txt")
-intra_25_500 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/intra_2.5x_coverage.HCI_500.txt")
-intra_25_1000 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/intra_2.5x_coverage.HCI_1000.txt")
-intra_25_5000 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/intra_2.5x_coverage.HCI_5000.txt")
+intra_25_150 <- read.table(file="HCR/length_intra_2.5x_coverage.HCR_150.txt")
+intra_25_500 <- read.table(file="HCR/length_intra_2.5x_coverage.HCR_500.txt")
+intra_25_1000 <- read.table(file="HCR/length_intra_2.5x_coverage.HCR_1000.txt")
+intra_25_5000 <- read.table(file="HCR/length_intra_2.5x_coverage.HCR_5000.txt")
 
-inter_25_150 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/inter_2.5x_coverage.HCI_150.txt")
-inter_25_500 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/inter_2.5x_coverage.HCI_500.txt")
-inter_25_1000 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/inter_2.5x_coverage.HCI_1000.txt")
-inter_25_5000 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/inter_2.5x_coverage.HCI_5000.txt")
+inter_25_150 <- read.table(file="HCR/length_inter_2.5x_coverage.HCR_150.txt")
+inter_25_500 <- read.table(file="HCR/length_inter_2.5x_coverage.HCR_500.txt")
+inter_25_1000 <- read.table(file="HCR/length_inter_2.5x_coverage.HCR_1000.txt")
+inter_25_5000 <- read.table(file="HCR/length_inter_2.5x_coverage.HCR_5000.txt")
 
 # Set graphical parameter `mfrow`
 dev.off()
@@ -71,15 +71,15 @@ hist_plot(inter_25_5000, "red", "INTER 2.5x 5000", 0)
 
 
 ###### intra vs inter 5x mean splitted
-intra_5_150 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/intra_5x_coverage.HCI_150.txt")
-intra_5_500 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/intra_5x_coverage.HCI_500.txt")
-intra_5_1000 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/intra_5x_coverage.HCI_1000.txt")
-intra_5_5000 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/intra_5x_coverage.HCI_5000.txt")
+intra_5_150 <- read.table(file="HCR/length_intra_5x_coverage.HCR_150.txt")
+intra_5_500 <- read.table(file="HCR/length_intra_5x_coverage.HCR_500.txt")
+intra_5_1000 <- read.table(file="HCR/length_intra_5x_coverage.HCR_1000.txt")
+intra_5_5000 <- read.table(file="HCR/length_intra_5x_coverage.HCR_5000.txt")
 
-inter_5_150 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/inter_5x_coverage.HCI_150.txt")
-inter_5_500 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/inter_5x_coverage.HCI_500.txt")
-inter_5_1000 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/inter_5x_coverage.HCI_1000.txt")
-inter_5_5000 <- read.table(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/HCR/HCR_data/inter_5x_coverage.HCI_5000.txt")
+inter_5_150 <- read.table(file="HCR/length_inter_5x_coverage.HCR_150.txt")
+inter_5_500 <- read.table(file="HCR/length_inter_5x_coverage.HCR_500.txt")
+inter_5_1000 <- read.table(file="HCR/length_inter_5x_coverage.HCR_1000.txt")
+inter_5_5000 <- read.table(file="HCR/length_inter_5x_coverage.HCR_5000.txt")
 
 dev.off()
 par(mfrow = c(4, 2)) 

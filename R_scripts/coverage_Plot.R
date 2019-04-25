@@ -1,24 +1,21 @@
-
-
-setwd("/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome")
 genomeSize = 1360000000
 ## PE_freq
-PE_freq <-read.csv(file="R_scripts/coverage_Stats/PE_Reads_sorted.coverage.freq", sep="\t", header=TRUE)
+PE_freq <-read.csv(file="coverage/PE_Reads_sorted.coverage.freq", sep="\t", header=TRUE)
 
 ## MP_ALL_Reads
-MP_ALL_Reads <-read.csv(file="R_scripts/coverage_Stats/MP_Reads_sorted_coverage.freq", sep="\t", header=TRUE)
+MP_ALL_Reads <-read.csv(file="coverage/MP_Reads_sorted_coverage.freq", sep="\t", header=TRUE)
 ##################################
 
 ## Pacbio_ALL_Reads
-Pacbio_ALL_Reads <-read.csv(file="R_scripts/coverage_Stats/Pacbio_reads_sorted.coverage.freq", sep="\t", header=TRUE)
+Pacbio_ALL_Reads <-read.csv(file="coverage/Pacbio_reads_sorted.coverage.freq", sep="\t", header=TRUE)
 ##################################
 
 ## Nanopore_ALL_Reads
-Nanopore_ALL_Reads <-read.csv(file="R_scripts/coverage_Stats/Nanopore_reads_sorted.coverage.freq", sep="\t", header=TRUE)
+Nanopore_ALL_Reads <-read.csv(file="coverage/Nanopore_reads_sorted.coverage.freq", sep="\t", header=TRUE)
 ##################################
 
 ## ALL READS
-ALL_reads <-read.csv(file="R_scripts/coverage_Stats/merge_sorted.coverage.freq", sep="\t", header=TRUE)
+ALL_reads <-read.csv(file="coverage/merge_sorted.coverage.freq", sep="\t", header=TRUE)
 ##################################
 
 ## Plot
