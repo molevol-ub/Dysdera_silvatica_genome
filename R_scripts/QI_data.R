@@ -1,7 +1,7 @@
 ## Quality Index metric
-QI_unique_Dsil <- read.csv(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/AED_statistics/unique_Dsil_QI_split.txt",header = FALSE, sep=",") 
-QI_all_Dsil <- read.csv(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/AED_statistics/annotation.all.maker.proteins_QI_split.txt",header = FALSE, sep=",") 
-QI_annotation_Dsil <- read.csv(file="/Users/jfsh/GIT_REPOS/Dysdera_silvatica_genome/R_scripts/AED_statistics/annotation_Dsilvatica-proteins_InterPro_QI_split.txt",header = FALSE, sep=",") 
+QI_unique_Dsil <- read.csv(file="AED/QI_split_unique_proteins-Dsil.txt",header = FALSE, sep=",") 
+QI_all_Dsil <- read.csv(file="AED/QI_split_annotation.all.maker.proteins.txt",header = FALSE, sep=",") 
+QI_annotation_Dsil <- read.csv(file="QI_split_annotation_Dsilvatica-proteins_InterPro.txt",header = FALSE, sep=",") 
 
 column_names <- c("gene", "5_UTR", "splice_mRNA", "exon_match_mRNA", "exon_overlap_mRNA", "splice_abinitio", "exons_abinitio", "num_exons", "3_UTR", "length_prot")
 
