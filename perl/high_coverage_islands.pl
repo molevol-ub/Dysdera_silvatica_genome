@@ -14,18 +14,19 @@ my $plot=$ARGV[3];
 my $CPU=$ARGV[4];
 my $intra_gap_var = $ARGV[5];
 my $length_file =  $ARGV[6];
+my $coverage_cutoff=$ARGV[7];
 
 if (!@ARGV) {
-	print "\n\nGiven a mean coverage determines regions with greater spected coverage:
+	print "\n\nGiven a mean coverage determines regions with greater expected coverage:
 	- Coverage: 5x standard deviation
 	- Length: Minimun length of reference to use
-	\n\nUsage:\nperl $0 coverage file length output_file CPU intra_gap_cutoff length_file\n\n";
+	\n\nUsage:\nperl $0 mean_coverage coverage_file length_cutoff output_file CPU intra_gap_cutoff length_file coverage_cutoff\n\n";
 	
 	&print_definition();
 	exit();
 }
 
-my $max_coverage = $coverage*5;
+my $max_coverage = $coverage*$coverage_cutoff;
 ## to get mean do: awk '{ sum +=$3; n++ } END { if (n > 0) print sum / n; }' Pacbio_CSS_PE.sorted.coverage.txt
 ## Result: 36.7009 mean coverage Pacbio vs. Paired-end ##
 
@@ -256,7 +257,7 @@ sub print_definition {
 print "
 #####
 ## Definition:
-Symbol * = high island coverage position
+Symbol * = high coverage region position
 Symbol - = normal position
 
 Example:
