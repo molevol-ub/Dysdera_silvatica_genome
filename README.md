@@ -1,13 +1,12 @@
 # Introduction
 This is a small git repository of the scripts we used in the genome assembly, annotation and comparative analysis of the Dysdera silvatica genome prokect.
 
-We basically include several scripts in perl, python or R. Some scripts might need additional perl/python/R modules in order to execute.
+We basically include several scripts in perl, python or R. Some scripts might need additional perl/python/R modules in order to execute that we have not included here.
 
 In some cases we include additional information within each script according the parameters employed or the data we used. All files are included under as supplementary information deposited in the GigaDB repository (link).
 
 # Perl scripts
 Some of this perl scripts are small and basic scripts that we basically collect here for the shake of reproducibility. Some others might contain more detailed algorithms. We briefly add a small piece of information on each one.
-
 
 ## contig_stats.pl
 
@@ -127,19 +126,93 @@ This script would take some time to download all the information requested.
 
         e.g. bash$ perl ./Dysdera_silvatica_genome/perl/NCBI_downloader.pl -file example.csv -n 3 -genome
 
-
+This script would take some time according to the amount of samples provided.
 
 ## high_coverage_islands.pl
 
+This script generates information regarding high-coverage regions. Given a mean coverage and contig lengths, it determines regions with a high coverage and fulfilling different length and deviation from the coverage mean cutoffs. 	
+
+See additional information in the paper cited.
+
+This image is an example plot generated where the coverage per base pair is shown in black and mean coverage is shown as a purple dot line. In green and orange dot lines, we plotted 2.5-5 times the average coverage cutoff. In blue we showed the intra gap length and in red the inter-repeat gap length. [Click image to see details].
+
+![Example Plot coverage](example/HCR.png)
+
+
+Usage:
+
+    bash$ perl ./Dysdera_silvatica_genome/perl/high_coverage_islands.pl mean_coverage coverage_file length_cutoff output_file CPU intra_gap_cutoff length_file coverage_cutoff
+
+Notes:
+
+- coverage_file is a coverage file generated using samtools from sort indexed bam file. It must include positions with 0 values if any
+
+```
+sequence_6091	1	0
+sequence_6091	2	0
+sequence_6091	3	0
+sequence_6091	4	0
+sequence_6091	5	0
+sequence_6091	6	0
+sequence_6091	7	0
+sequence_6091	8	0
+sequence_6091	9	1
+sequence_6091	10	1
+sequence_6091	11	1
+sequence_6091	12	1
+sequence_6091	13	1
+sequence_6091	14	1
+sequence_6091	15	1
+sequence_6091	16	2
+sequence_6091	17	2
+...
+sequence_6091	2658	57
+sequence_6091	2659	62
+sequence_6091	2660	63
+sequence_6091	2661	63
+sequence_6091	2662	65
+...
+sequence_6091	24649	12
+sequence_6091	24650	12
+sequence_6091	24651	11
+sequence_6091	24652	9
+sequence_6091	24653	9
+sequence_6091	24654	9
+sequence_6091	24655	8
+sequence_6091	24656	8
+sequence_6091	24657	8
+sequence_6091	24658	8
+sequence_6091	24659	7
+`````
+
+
+
+- To obtain the mean coverage you can do: 
+        
+        awk '{ sum +=$3; n++ } END { if (n > 0) print sum / n; }' coverage_file.txt
+
+- length_cutoff: it can be a single value or comma separated values: 50 or 50,100,500
+
+- length_file:
+
+To do so, we will employ the script add it here named: [get-size-contigs.pl](perl/get-size-contigs.pl)
+
+
 ## high_coverage_islands2bed.pl
+TODO
 
 ## get_taxonomy_IDs.pl
+TODO
 
 ## taxonomy_parser.pl
+TODO
 
+# Python scripts
 
-
-
+# R scripts
 
 # Citation
 "The draft genome sequence of the spider Dysdera silvatica (Araneae, Dysderidae): A valuable resource for functional and evolutionary genomic studies in chelicerates" Sánchez-Herrero J. F., Frías-López C., Escuer P., Hinojosa-Alvarez S., Arnedo M.A., Sánchez-Gracia A., Rozas J. to add DOI and citation
+
+# License
+Copyright (c) 2019 Evolutionary Genomics & Bioinformatics 
