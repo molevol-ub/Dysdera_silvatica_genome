@@ -341,16 +341,14 @@ Finally, we plotted results using different R scripts:
 ![High Coverage Region Annotation](example/HCR_annotation.png)
 
 
-## Taxonomy profile    
-
-### get_taxonomy_IDs.pl
-[TO DO...]
-
-### taxonomy_parser.pl
-[TO DO...]
-
-
 ## Coverage distribution
+
+For each sequencing run generated, we mapped reads against the assembled genome and generate using samtools coverage files (including 0 value positions). Using an estimated genome size and the different files we plotted the coverage distribution, discarding values smaller than 2x for a better visualization and the mean values for each sequencing run (dash lines)
+
+e.g. example of coverage distributions
+
+![Coverage distribution](example/coverage_sequencing_run.png)
+
 
 ## Annotation statistics
 
@@ -358,11 +356,66 @@ Annotation statistics provided by Maker were plot after each annotation, trainin
 
 AED statistics were plot for each annotation round using the R script [AED_statistics_plot.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/AED_statistics_plot.R)
 
+e.g. Annotation Edit Distance statistics
 ![Annotation Edit Distance statistics](example/AED_statistics.png)
 
 The quality index provided by maker was plot also for different sets using the R script [QI_data.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/QI_data.R)
 
+e.g. Annotation Quality Index statistics
 ![Annotation Quality Index statistics](example/QI_statistics.png)
 
 
+## Taxonomy profile    
+Once we got protein-coding genes annotated from our draft assembly, we checked the taxonomy profile of this protein sequences. We retrieved several proteins fasta sequences from a broad amoung of arthropods. We added a tag to each protein id according to the species of origin and we generated a BLASTP search. Then, we parse best hits and get taxonomy of the hits identified to later plot using R.
 
+We employed three different scripts and we followed the next steps:
+
+[get_taxonomy_IDs.pl](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/perl/get_taxonomy_IDs.pl)
+
+This script basically filters e-value < 1e-03 and retains the best hit for each protein and for each different taxa.
+
+e.g. for a given protein from Dsilvatica (first column), several hits from others were retrieve in the second column and a uniq description of the taxa was added in the third column.
+
+     bash$ perl ./Dysdera_silvatica_genome/perl/get_taxonomy_IDs.pl BLAST_UNIPROT > taxonomy.txt
+
+e.g. taxonomy.txt file
+```
+bash$ head taxonomy.txt
+snap_masked-Dsil_Scaffv1_471245-processed-gene-0.1-mRNA-1       LHES_6943,LREC_1431,PTEP_3636   LHES,LREC,PTEP
+snap_masked-sequence_64407-processed-gene-0.2-mRNA-1    LPOL_831        LPOL
+maker-sequence_33508-snap-gene-0.0-mRNA-1       Agen_74014,Cscult_19488,Cscult_5490,LPOL_14821,LPOL_8682,LPOL_8683,Mmartensi_14445,Mmartensi_19707,PTEP_28629,PTEP_28630,Smartitima_13564,Smimosarum_6457       Agen,Cscult,LPOL,Mmartensi,PTEP,Smartitima,Smimosarum
+```
+
+[taxonomy_parser.pl](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/perl/taxonomy_parser.pl)
+
+Then, using an phylogenetic inclusive strategy specifically designed for this example, we selected the broadest group available for each protein. e.g. if we find a protein in any spider, but only from the araneomorphae group, we would assign Dsilvatica protein into that phylogenetic context. if we find a hit between any spider, arthropods and C.elegans at the same time, we could say that this protein would be present in any ecdysozoa.
+
+We established different levels according to Dsilvatica phylogenetic context: 
+
+```
+Haplogynae	LREC
+araneomorphae	Smimosarum,LHES,LREC,PTEP	
+araneae	Agen,LHES,LREC,Smimosarum,PTEP
+arachnida	Agen,LHES,LREC,Smimosarum,Mmartensi,Cscult,Emaynei,Iscapularis,Turticae,Moccidentalis,PTEP
+chelicerata	LPOL,Agen,LHES,LREC,Smimosarum,Mmartensi,Cscult,Emaynei,Iscapularis,Turticae,Moccidentalis,PTEP
+arthropoda	Dmel,Bmori,Phumanus,Dpul,Smartitima,Hdujardini,LPOL,Agen,LHES,LREC,Smimosarum,Mmartensi,Cscult,Emaynei,Iscapularis,Turticae,Moccidentalis,PTEP
+ecdysozooa	Celegans,Dmel,Bmori,Phumanus,Dpul,Smartitima,Hdujardini,LPOL,Agen,LHES,LREC,Smimosarum,Mmartensi,Cscult,Emaynei,Iscapularis,Turticae,Moccidentalis,PTEP
+```
+
+Command:
+
+     bash$ perl ./Dysdera_silvatica_genome/perl/taxonomy_parser.pl taxonomy.txt > Summary.txt
+
+e.g. Summary output
+```
+bash$ head Summary.txt
+snap_masked-Dsil_Scaffv1_471245-processed-gene-0.1-mRNA-1   LHES_6943,LREC_1431,PTEP_3636   LHES,LREC,PTEP  araneomorphae
+snap_masked-sequence_64407-processed-gene-0.2-mRNA-1	LPOL_831	LPOL	chelicerata
+maker-sequence_33508-snap-gene-0.0-mRNA-1	Agen_74014,Cscult_19488,Cscult_5490,LPOL_14821,LPOL_8682,LPOL_8683,Mmartensi_14445,Mmartensi_19707,PTEP_28629,PTEP_28630,Smartitima_13564,Smimosarum_6457	Agen,Cscult,LPOL,Mmartensi,PTEP,Smartitima,Smimosarum	arthropoda
+```
+
+Then, we will basically summaryzed statistics from column 3 and plot them using R script [PieChart_Taxonomy.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/PieChart_Taxonomy.R)
+
+e.g. pie chart plot for taxonomy distribution
+
+![Taxonomy profile](example/taxonomy.png)
