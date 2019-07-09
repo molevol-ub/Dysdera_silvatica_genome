@@ -35,8 +35,9 @@ SOFTWARE.
 
 # Documentation
 
-## Perl scripts
-Some of this perl scripts are small and basic scripts that we basically collect here for the shake of reproducibility. Some others might contain more detailed algorithms. We briefly add a small piece of information on each one.
+Some of this scripts are small and basic scripts that we basically collect here for the shake of reproducibility. Some others might contain more detailed algorithms. We briefly add a small piece of information on each one in the context of the process it was employed.
+
+## Sequence manipulation
 
 ### contig_stats.pl
 
@@ -62,6 +63,10 @@ Both scripts subset a given assembly fasta file selecting contigs bigger or smal
      e.g. bash$ perl ./Dysdera_silvatica_genome/perl/get-long-contigs.pl assembly_file.fasta 10000
      e.g. bash$ perl ./Dysdera_silvatica_genome/perl/get-short-contigs.pl assembly_file.fasta 500
 
+### get-size-contigs.pl
+
+
+## Download NCBI reference genomes
 
 ### NCBI_downloader.pl
 
@@ -146,7 +151,6 @@ Xanthomonas oryzae pv. oryzae PXO99A --> ftp://ftp.ncbi.nlm.nih.gov/genomes/all/
 
 This script would take some time to download all the information requested. 
 
-
 2) Provide some examples: name and ftp site in a csv file
 
         e.g. bash$ cat example.csv
@@ -159,6 +163,8 @@ Command:
     e.g. bash$ perl ./Dysdera_silvatica_genome/perl/NCBI_downloader.pl -file example.csv -n 3 -genome
 
 This script would take some time according to the amount of samples provided.
+
+## High Coverage Regions (HCR)
 
 ### high_coverage_islands.pl
 
@@ -218,6 +224,8 @@ sequence_6091	24658	8
 sequence_6091	24659	7
 `````
 
+(Previous image was generated using the R script [Plot_Example_HighCoveraIsland.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/Plot_Example_HighCoveraIsland.R) and a coverage file information for a selected contig.)
+
 - To obtain the **mean coverage** you can do: 
         
         awk '{ sum +=$3; n++ } END { if (n > 0) print sum / n; }' coverage_file.txt
@@ -233,8 +241,33 @@ sequence_6091	24659	7
 - **coverage_cutoff**: The amount of times to increase the mean coverage to consider it over the the threshold. e.g. 2.5, 5, 10...
 
 
-This script generates several output files:
+This high_coverage_islands.pl script generates this output. For additional details, check supplementary files and information in the original paper:
 
+```
+sequence_10003  150     24752   4       repeat_1        -       -       -       6338    6508    170
+sequence_10003  150     24752   4       repeat_2        6509    11083   4574    11084   11776   692
+sequence_10003  150     24752   4       repeat_3        11777   20259   8482    20260   21098   838
+sequence_10003  150     24752   4       repeat_4        21099   22039   940     22040   22497   457
+sequence_10003  500     24752   2       repeat_1        -       -       -       11084   11776   692
+sequence_10003  500     24752   2       repeat_2        11777   20259   8482    20260   21098   838
+sequence_10005  10      13790   4       repeat_1        -       -       -       9668    10197   529
+sequence_10005  10      13790   4       repeat_2        10198   10335   137     10336   11212   876
+sequence_10005  10      13790   4       repeat_3        11213   11250   37      11251   11749   498
+sequence_10005  10      13790   4       repeat_4        11750   13191   1441    13192   13270   78
+sequence_10005  150     13790   3       repeat_1        -       -       -       9668    10197   529
+sequence_10005  150     13790   3       repeat_2        10198   10335   137     10336   11212   876
+sequence_10005  150     13790   3       repeat_3        11213   11250   37      11251   11749   498
+sequence_10005  500     13790   2       repeat_1        -       -       -       9668    10197   529
+sequence_10005  500     13790   2       repeat_2        10198   10335   137     10336   11212   876
+sequence_10011  10      14044   2       repeat_1        -       -       -       7090    7175    85
+sequence_10011  10      14044   2       repeat_2        7176    7657    481     7658    7782    124
+sequence_10011  150     14044   1       repeat_1        -       -       -       8016    8201    185
+sequence_10010  10      12713   2       repeat_1        -       -       -       449     1347    898
+sequence_10010  10      12713   2       repeat_2        1348    1359    11      1360    1372    12
+sequence_10010  150     12713   2       repeat_1        -       -       -       449     1347    898
+sequence_10010  150     12713   2       repeat_2        1348    1484    136     1485    1715    230
+sequence_10010  500     12713   1       repeat_1        -       -       -       449     1347    898
+```
 
 ### high_coverage_islands2bed.pl
 
@@ -246,16 +279,50 @@ This script converts outfile from high_coverage_islands.pl into bed format for f
     perl ./Dysdera_silvatica_genome/perl/high_coverage_islands2bed.pl HCI_out_file name
 
 
+    e.g. perl ./Dysdera_silvatica_genome/perl/high_coverage_islands2bed.pl subset_10kb.scaffolds_2.5x_coverage.HCI_5000.txt HCI_5000.bed
+    
+Using Bedtools we would intersect the annotation of the HCR regions with functional, structural or repeat annotation. 
+
+    bedtools intersect -wao -a HCI_5000.bed -b Dsil_repeatMasker.bed > intersection_annotation.bed
+
+In order to convert repeatmasker annotation into bed format, we developed and script included here and named as [repeatMasker2bed.py](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/python/repeatMasker2bed.py)
+
+    bash$ python ./Dysdera_silvatica_genome/python/repeatMasker2bed.py
+
+Finally, once we have collected the amount of repeats in the whole population and in the subset, we analyzed if they were significantly different using the cumulative distribution function under a [hipergeometric distribution](https://en.wikipedia.org/wiki/Hypergeometric_distribution). Credit to [Damian Kao](https://www.biostars.org/p/66729/)
+
+We analyzed several intra repreat cutoff and coverage cutoff and we generated a bash script, [HCR_commands.sh](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/bash/HCR_commands.sh), to automatize the process.
+
+Finally, we plotted results using different R scripts:
+- [Plot_HCR_length.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/Plot_HCR_length.R): to plot intra and inter gap length distribution for each set.
+
+- [bar_plot_HCR.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/bar_plot_HCR.R): to plot annotation of repeats for each set.
+
+![High Coverage Region Annotation](example/HCR_annotation.png)
+
+
+## Taxonomy profile    
+
 ### get_taxonomy_IDs.pl
 [TO DO...]
 
 ### taxonomy_parser.pl
 [TO DO...]
 
-## Python scripts
-[TO DO...]
 
-## R scripts
-[TO DO...]
+## Coverage distribution
+
+## Annotation statistics
+
+Annotation statistics provided by Maker were plot after each annotation, training and final round, to check the quality of the annotation generated.
+
+AED statistics were plot for each annotation round using the R script [AED_statistics_plot.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/AED_statistics_plot.R)
+
+![Annotation Edit Distance statistics](example/AED_statistics.png)
+
+The quality index provided by maker was plot also for different sets using the R script [QI_data.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/QI_data.R)
+
+![Annotation Quality Index statistics](example/QI_statistics.png)
+
 
 
