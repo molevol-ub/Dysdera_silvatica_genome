@@ -1,4 +1,7 @@
 # Introduction
+
+Copyright (c) 2019 Evolutionary Genomics & Bioinformatics 
+
 This is a small git repository of the scripts we used in the genome assembly, annotation and comparative analysis of the Dysdera silvatica genome prokect.
 
 We include several scripts in perl, python or R. Some scripts might need additional perl/python/R modules in order to execute that we have not included here.
@@ -7,31 +10,6 @@ In some cases we include additional information within each script according the
 
 # Citation
 "The draft genome sequence of the spider Dysdera silvatica (Araneae, Dysderidae): A valuable resource for functional and evolutionary genomic studies in chelicerates" Sánchez-Herrero J. F., Frías-López C., Escuer P., Hinojosa-Alvarez S., Arnedo M.A., Sánchez-Gracia A., Rozas J. [to add DOI and citation]
-
-# License
-
-MIT License
-
-Copyright (c) 2019 Evolutionary Genomics & Bioinformatics 
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 
 # Documentation
 
@@ -349,12 +327,17 @@ e.g. example of coverage distributions
 
 ![Coverage distribution](example/coverage_sequencing_run.png)
 
+## Annotation
 
-## Annotation statistics
+Annotation was performed using iterative annotation rounds following maker documentation. We trained AUGUSTUS, SNAP and generated different models from BUSCO single copy parameters. We followed the instructions that we prepare for the [Functional Genome Annotation Workshop](https://github.com/JFsanchezherrero/Functional_Genome_Annotation) under the [AdaptNet](https://adaptnet.es/) workshop. Please check additional details in the paper and supplementary information. 
 
 Annotation statistics provided by Maker were plot after each annotation, training and final round, to check the quality of the annotation generated.
 
-AED statistics were plot for each annotation round using the R script [AED_statistics_plot.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/AED_statistics_plot.R)
+AED statistics were retrieved using a simple bash script from each protein fasta file annotated in each round. 
+
+     grep '>' fasta_input_file | awk '{print $1":"$3}' | perl -ne '@array=split(":", $_); $array[0]=~ s/^>//; print $array[0]."\t".$array[2];' > outputfile
+
+Then, statistics were plotted for each annotation round using the R script [AED_statistics_plot.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/AED_statistics_plot.R)
 
 e.g. Annotation Edit Distance statistics
 ![Annotation Edit Distance statistics](example/AED_statistics.png)
@@ -419,3 +402,30 @@ Then, we will basically summaryzed statistics from column 3 and plot them using 
 e.g. pie chart plot for taxonomy distribution
 
 ![Taxonomy profile](example/taxonomy.png)
+
+
+# License
+
+MIT License
+
+Copyright (c) 2019 Evolutionary Genomics & Bioinformatics 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
