@@ -76,13 +76,13 @@ There are two possibilities here.
 
 We can provide names of groups and path to assembly_summary ftp sites. The scripts downloads all the genomes available:
 
-For example: Bacteria & Virus. Provide a csv file
+For example: Bacteria & Virus. Provide a csv file like:
         
         e.g. bash$ cat test.csv
         Virus,ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/assembly_summary.txt
         Bacteria,ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/assembly_summary.txt
 
-Execute NCBI_downloader.pl to download genome information from each strain and using 3 threads.
+Execute NCBI_downloader.pl to download genome information from each strain and using 3 threads. It would initially download the assembly summary file to then retrieve each entry.
 
         e.g. bash$ perl ./Dysdera_silvatica_genome/perl/NCBI_downloader.pl -file test.csv -summary -n 3 -genome
 
@@ -124,7 +124,9 @@ This script would take some time to download all the information requested.
         GCF_000007365.1,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/007/365/GCF_000007365.1_ASM736v1         
         GCF_000007725.1,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/007/725/GCF_000007725.1_ASM772v1         
 
-        e.g. bash$ perl ./Dysdera_silvatica_genome/perl/NCBI_downloader.pl -file example.csv -n 3 -genome
+Command:
+
+    e.g. bash$ perl ./Dysdera_silvatica_genome/perl/NCBI_downloader.pl -file example.csv -n 3 -genome
 
 This script would take some time according to the amount of samples provided.
 
@@ -138,14 +140,15 @@ This image is an example plot generated where the coverage per base pair is show
 
 ![Example Plot coverage](example/HCR.png)
 
-
 Usage:
 
-    bash$ perl ./Dysdera_silvatica_genome/perl/high_coverage_islands.pl mean_coverage coverage_file length_cutoff output_file CPU intra_gap_cutoff length_file coverage_cutoff
+    bash$ perl ./Dysdera_silvatica_genome/perl/high_coverage_islands.pl \
+    mean_coverage coverage_file length_cutoff output_file CPu   \
+    intra_gap_cutoff length_file coverage_cutoff
 
 Notes:
 
-- coverage_file is a coverage file generated using samtools from sort indexed bam file. It must include positions with 0 values if any
+- **coverage_file** is a coverage file generated using samtools from sort indexed bam file. It must include positions with 0 values if any
 
 ```
 sequence_6091	1	0
@@ -185,21 +188,33 @@ sequence_6091	24658	8
 sequence_6091	24659	7
 `````
 
-
-
-- To obtain the mean coverage you can do: 
+- To obtain the **mean coverage** you can do: 
         
         awk '{ sum +=$3; n++ } END { if (n > 0) print sum / n; }' coverage_file.txt
 
-- length_cutoff: it can be a single value or comma separated values: 50 or 50,100,500
+- **length_cutoff**: Minimun length cutoff for contig sequences. e.g. 30000
 
-- length_file:
+- **intra_gap_cutoff**: Inter-HCR minimum length. it can be a single value or comma separated values: 50 or 50,100,500
 
-To do so, we will employ the script add it here named: [get-size-contigs.pl](perl/get-size-contigs.pl)
+- **length_file**: For each contig, provide the sequence length. To do so, we will employ the script add it here named: [get-size-contigs.pl](perl/get-size-contigs.pl)
+
+        bash$ perl ./Dysdera_silvatica_genome/perl/get-size-contigs.pl contigs.fasta
+
+- **coverage_cutoff**: The amount of times to increase the mean coverage to consider it over the the threshold. e.g. 2.5, 5, 10...
+
+
+This script generates several output files:
 
 
 ## high_coverage_islands2bed.pl
-TODO
+
+This script converts outfile from high_coverage_islands.pl into bed format for further analysis and intersection of annotation with the structural and functional annotation.
+
+    bash$ perl ./Dysdera_silvatica_genome/perl/high_coverage_islands2bed.pl 
+    
+    Usage:
+    perl ./Dysdera_silvatica_genome/perl/high_coverage_islands2bed.pl HCI_out_file name
+
 
 ## get_taxonomy_IDs.pl
 TODO
