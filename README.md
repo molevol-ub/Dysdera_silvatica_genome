@@ -35,39 +35,38 @@ SOFTWARE.
 
 # Documentation
 
-## Perl scripts
-Some of this perl scripts are small and basic scripts that we basically collect here for the shake of reproducibility. Some others might contain more detailed algorithms. We briefly add a small piece of information on each one.
+Some of this scripts are small and basic scripts that we basically collect here for the shake of reproducibility. Some others might contain more detailed algorithms. We briefly add a small piece of information on each one in the context of the process it was employed.
 
-### contig_stats.pl
+## Sequence manipulation
 
-It generates contig statistics and metrics from a given assembly. 
+There are some procedures that we need to perform with our sequences such as:
 
-    bash$ perl ./Dysdera_silvatica_genome/perl/contig_stats.pl
+-  Get sequences longer or shorter than a given length. We employed get-long-contigs.pl or get-short-contigs.pl
+Both scripts subset a given assembly fasta file selecting contigs bigger or smaller than the size selected.
 
-     Usage: please provide a single fasta file for Contig Statistics...
-     perl perl/contig_stats.pl fasta_file
+     e.g. bash$ perl ./Dysdera_silvatica_genome/perl/get-long-contigs.pl assembly_file.fasta 10000
+     e.g. bash$ perl ./Dysdera_silvatica_genome/perl/get-short-contigs.pl assembly_file.fasta 500
+
+- Generates contig statistics and metrics from a given assembly using [contig_stats.pl](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/perl/contig_stats.pl). 
+
+        bash$ perl ./Dysdera_silvatica_genome/perl/contig_stats.pl
+
+        Usage: please provide a single fasta file for Contig Statistics...
+        perl perl/contig_stats.pl fasta_file
 
 Notes:
-- Sequences < 150pb would discarded for the statistics...
+- Sequences < 150pb would be discarded for the statistics...
 - Statistics are provided for different sets of sequences
 - Default splitting sets: 150, 500, 1000, 5000, 10000
 - Provide new parts using a csv argument for the script
 
       e.g. bash$perl ./Dysdera_silvatica_genome/perl/contig_stats.pl fasta_file 1000,15000
 
-### get-long-contigs.pl & get-short-contigs.pl
-
-Both scripts subset a given assembly fasta file selecting contigs bigger or smaller than the size selected.
-
-     e.g. bash$ perl ./Dysdera_silvatica_genome/perl/get-long-contigs.pl assembly_file.fasta 10000
-     e.g. bash$ perl ./Dysdera_silvatica_genome/perl/get-short-contigs.pl assembly_file.fasta 500
-
-
-### NCBI_downloader.pl
+## Download NCBI reference genomes
 
 We downloaded a set of sequences from NCBI in order to perform a quality and contaminant search. 
 
-Following instructions available at NCBI data ftp://ftp.ncbi.nlm.nih.gov/pub/factsheets/HowTo_Downloading_Genomic_Data.pdf
+Following instructions available at NCBI factsheet: [How to download data](ftp://ftp.ncbi.nlm.nih.gov/pub/factsheets/HowTo_Downloading_Genomic_Data.pdf)
 
 We followed the next steps: 
 
@@ -90,8 +89,7 @@ GCF_000007365.1 PRJNA224116     SAMN02604269            representative genome   
 GCF_000007725.1 PRJNA224116     SAMN02604289            representative genome   224915  9       Buchnera aphidicola str. Bp (Baizongia pistaciae)       strain=Bp (Baizongia pistaciae)         latest  Complete Genome Major   Full    2003/01/29      ASM772v1        Valencia Univ.  GCA_000007725.1 identical       ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/007/725/GCF_000007725.1_ASM772v1         
 `````
 
-
-2. 	Use the NCBI_downloader.pl script to download the data file for each FTP path.
+2. 	Use the [NCBI_downloader.pl](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/perl/NCBI_downloader.pl) script to download the data file for each FTP path.
       
         bash$ perl ./Dysdera_silvatica_genome/perl/NCBI_downloader.pl 
         
@@ -146,7 +144,6 @@ Xanthomonas oryzae pv. oryzae PXO99A --> ftp://ftp.ncbi.nlm.nih.gov/genomes/all/
 
 This script would take some time to download all the information requested. 
 
-
 2) Provide some examples: name and ftp site in a csv file
 
         e.g. bash$ cat example.csv
@@ -160,15 +157,13 @@ Command:
 
 This script would take some time according to the amount of samples provided.
 
-### high_coverage_islands.pl
+## High Coverage Regions (HCR)
 
-This script generates information regarding high-coverage regions. Given a mean coverage and contig lengths, it determines regions with a high coverage and fulfilling different length and deviation from the coverage mean cutoffs. 	
-
-See additional information in the paper cited.
-
-This image is an example plot generated where the coverage per base pair is shown in black and mean coverage is shown as a purple dot line. In green and orange dot lines, we plotted 2.5-5 times the average coverage cutoff. In blue we showed the intra gap length and in red the inter-repeat gap length. [Click image to see details].
+This high_coverage_islands.pl script generates information regarding high-coverage regions. Given a mean coverage and contig lengths, it determines regions with a high coverage fulfilling different length and deviation from the coverage mean cutoff provided. See additional information in the paper cited. See below examples of High coverage regions.
 
 ![Example Plot coverage](example/HCR.png)
+
+This image is an example plot generated where the coverage per base pair is shown in black and mean coverage is shown as a purple dot line. In green and orange dot lines, we plotted 2.5-5 times the average coverage cutoff. In blue we showed the intra gap length and in red the inter-repeat gap length. [Click image to see details].
 
 Usage:
 
@@ -218,6 +213,8 @@ sequence_6091	24658	8
 sequence_6091	24659	7
 `````
 
+(Previous image was generated using the R script [Plot_Example_HighCoveraIsland.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/Plot_Example_HighCoveraIsland.R) and a coverage file information for a selected contig.)
+
 - To obtain the **mean coverage** you can do: 
         
         awk '{ sum +=$3; n++ } END { if (n > 0) print sum / n; }' coverage_file.txt
@@ -233,12 +230,35 @@ sequence_6091	24659	7
 - **coverage_cutoff**: The amount of times to increase the mean coverage to consider it over the the threshold. e.g. 2.5, 5, 10...
 
 
-This script generates several output files:
+This high_coverage_islands.pl script generates this output. For additional details, check supplementary files and information in the original paper:
 
+```
+sequence_10003  150     24752   4       repeat_1        -       -       -       6338    6508    170
+sequence_10003  150     24752   4       repeat_2        6509    11083   4574    11084   11776   692
+sequence_10003  150     24752   4       repeat_3        11777   20259   8482    20260   21098   838
+sequence_10003  150     24752   4       repeat_4        21099   22039   940     22040   22497   457
+sequence_10003  500     24752   2       repeat_1        -       -       -       11084   11776   692
+sequence_10003  500     24752   2       repeat_2        11777   20259   8482    20260   21098   838
+sequence_10005  10      13790   4       repeat_1        -       -       -       9668    10197   529
+sequence_10005  10      13790   4       repeat_2        10198   10335   137     10336   11212   876
+sequence_10005  10      13790   4       repeat_3        11213   11250   37      11251   11749   498
+sequence_10005  10      13790   4       repeat_4        11750   13191   1441    13192   13270   78
+sequence_10005  150     13790   3       repeat_1        -       -       -       9668    10197   529
+sequence_10005  150     13790   3       repeat_2        10198   10335   137     10336   11212   876
+sequence_10005  150     13790   3       repeat_3        11213   11250   37      11251   11749   498
+sequence_10005  500     13790   2       repeat_1        -       -       -       9668    10197   529
+sequence_10005  500     13790   2       repeat_2        10198   10335   137     10336   11212   876
+sequence_10011  10      14044   2       repeat_1        -       -       -       7090    7175    85
+sequence_10011  10      14044   2       repeat_2        7176    7657    481     7658    7782    124
+sequence_10011  150     14044   1       repeat_1        -       -       -       8016    8201    185
+sequence_10010  10      12713   2       repeat_1        -       -       -       449     1347    898
+sequence_10010  10      12713   2       repeat_2        1348    1359    11      1360    1372    12
+sequence_10010  150     12713   2       repeat_1        -       -       -       449     1347    898
+sequence_10010  150     12713   2       repeat_2        1348    1484    136     1485    1715    230
+sequence_10010  500     12713   1       repeat_1        -       -       -       449     1347    898
+```
 
-### high_coverage_islands2bed.pl
-
-This script converts outfile from high_coverage_islands.pl into bed format for further analysis and intersection of annotation with the structural and functional annotation.
+Then, using the script high_coverage_islands2bed.pl, we convert outfile from high_coverage_islands.pl into bed format for further analysis and intersection of annotation with the structural and functional annotation.
 
     bash$ perl ./Dysdera_silvatica_genome/perl/high_coverage_islands2bed.pl 
     
@@ -246,16 +266,103 @@ This script converts outfile from high_coverage_islands.pl into bed format for f
     perl ./Dysdera_silvatica_genome/perl/high_coverage_islands2bed.pl HCI_out_file name
 
 
+    e.g. perl ./Dysdera_silvatica_genome/perl/high_coverage_islands2bed.pl subset_10kb.scaffolds_2.5x_coverage.HCI_5000.txt HCI_5000.bed
+    
+Using Bedtools we would intersect the annotation of the HCR regions with functional, structural or repeat annotation. 
+
+    bedtools intersect -wao -a HCI_5000.bed -b Dsil_repeatMasker.bed > intersection_annotation.bed
+
+In order to convert repeatmasker annotation into bed format, we developed and script included here and named as [repeatMasker2bed.py](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/python/repeatMasker2bed.py)
+
+    bash$ python ./Dysdera_silvatica_genome/python/repeatMasker2bed.py repeatMasker.out output_name
+ 
+ e.g. repeatMasker.out file:
+ ```
+    SW   perc perc perc  query           position in query        matching           repeat              position in repeat
+score   div. del. ins.  sequence        begin  end      (left)   repeat             class/family      begin  end    (left)      ID
+
+  332   10.0  4.0  0.0  sequence_1           1     50  (70697) C rnd-4_family-326   Unknown             (76)     52      1       1  
+  324   17.7  0.0  0.0  sequence_1          60    121  (70626) C rnd-1_family-636   Unknown              (0)     64      3       2  
+  996   12.7  1.3  0.6  sequence_1         129    287  (70460) C rnd-1_family-547   Unknown              (0)    160      1       3 *
+ 1848   10.8  4.5  0.0  sequence_1         273    610  (70137) + rnd-1_family-473   Unknown                1    307    (0)       4  
+  252   17.4  0.0  0.0  sequence_1         596    641  (70106) C rnd-4_family-326   Unknown             (30)     98     53       5 *
+  308   12.5  0.0  0.0  sequence_1         620    667  (70080) C rnd-4_family-711   Unknown              (0)     48      1       6  
+ 3368    6.8  0.4  0.4  sequence_1        1167   1562  (69185) C rnd-1_family-688   Unknown              (0)    458     63       7  
+ 2797   11.1  2.2  0.2  sequence_1        1563   1976  (68771) C rnd-1_family-168   DNA/TcMar-Pogo       (0)    422      1       8  
+ 1057    5.2 10.3  1.2  sequence_1        1977   2131  (68616) + rnd-1_family-943   Unknown                1    169    (0)       9  
+  656   13.2  0.9  0.0  sequence_1        2129   2234  (68513) C rnd-6_family-3308  SINE/ID            (130)    748    642      10 *
+ ```
+
+e.g. repeatMasker2bed output file
+
+````
+sequence_1      1       50      rnd-4_family-326==Unknown       332     +
+sequence_1      60      121     rnd-1_family-636==Unknown       324     +
+sequence_1      129     287     rnd-1_family-547==Unknown       996     +
+sequence_1      273     610     rnd-1_family-473==Unknown       1848    +
+sequence_1      596     641     rnd-4_family-326==Unknown       252     +
+sequence_1      620     667     rnd-4_family-711==Unknown       308     +
+sequence_1      1167    1562    rnd-1_family-688==Unknown       3368    +
+sequence_1      1563    1976    rnd-1_family-168==DNA/TcMar-Pogo        2797    +
+sequence_1      1977    2131    rnd-1_family-943==Unknown       1057    +
+sequence_1      2129    2234    rnd-6_family-3308==SINE/ID      656     +
+````
+
+Finally, we need to collect the amount of repeats in the whole genome and in the subset we want to analyzed.
+
+e.g. count of repeat types in the whole genome.
+```
+DNA/TcMar-Tc4   21816
+DNA/Zisupton    1953
+LINE    274771
+LINE/CR1        3223
+LINE/Dong-R4    21921
+Low_complexity  41405
+LTR     22969
+LTR/Copia       1775
+RC/Helitron     2444
+rRNA    851
+Satellite       4890
+SINE?   12984
+SINE/ID 143670
+Unknown 1840236
+```
+
+Then, we would analyze if they were significantly different, the amount for each type in the genome and the subset, using the cumulative distribution function under a [hipergeometric distribution](https://en.wikipedia.org/wiki/Hypergeometric_distribution). Credit to [Damian Kao](https://www.biostars.org/p/66729/)
+
+
+We analyzed several intra repreat cutoff and coverage cutoff and we generated a bash script, [HCR_commands.sh](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/bash/HCR_commands.sh), to automatize the process.
+
+Finally, we plotted results using different R scripts:
+- [Plot_HCR_length.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/Plot_HCR_length.R): to plot intra and inter gap length distribution for each set.
+
+- [bar_plot_HCR.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/bar_plot_HCR.R): to plot annotation of repeats for each set.
+
+![High Coverage Region Annotation](example/HCR_annotation.png)
+
+
+## Taxonomy profile    
+
 ### get_taxonomy_IDs.pl
 [TO DO...]
 
 ### taxonomy_parser.pl
 [TO DO...]
 
-## Python scripts
-[TO DO...]
 
-## R scripts
-[TO DO...]
+## Coverage distribution
+
+## Annotation statistics
+
+Annotation statistics provided by Maker were plot after each annotation, training and final round, to check the quality of the annotation generated.
+
+AED statistics were plot for each annotation round using the R script [AED_statistics_plot.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/AED_statistics_plot.R)
+
+![Annotation Edit Distance statistics](example/AED_statistics.png)
+
+The quality index provided by maker was plot also for different sets using the R script [QI_data.R](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/R_scripts/QI_data.R)
+
+![Annotation Quality Index statistics](example/QI_statistics.png)
+
 
 
