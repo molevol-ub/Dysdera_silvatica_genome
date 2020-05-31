@@ -1,3 +1,18 @@
+- [Introduction](#heading)
+- [Citation](#heading-1)
+- [Additional information](#heading-2)
+  * [Note on GigaScience DB entry](#sub-heading-1)
+    + [Concerns about the data](#sub-sub-heading-1)
+- [Documentation](#heading-3)
+  * [Sequence manipulation](#sub-heading-1)
+  * [Download NCBI reference genomes](#sub-heading-2)
+  * [High Coverage Regions (HCR)](#sub-heading-3)
+  * [Coverage distribution](#sub-heading-4)
+  * [Annotation](#sub-heading-5)
+  * [Taxonomy profile](#sub-heading-6)
+- [License](#heading-4)
+
+
 # Introduction
 
 Copyright (c) 2019 Evolutionary Genomics & Bioinformatics 
@@ -34,7 +49,7 @@ Within the supporting data available in GigaScience database you should be able 
 - Dsilvatica_repeats-lib.fasta  -  Repeat families (fasta format)
 - seqs2discard.txt  -  Sequences discarded from the original draft while uploading to NCBI (txt format)
 
-## Concerns about the data
+### Concerns about the data
 
 We have noticed that there is an incongruency in fasta name headers between the NCBI Genbank genome fasta version and the GFF
 file we provided within the GigaScience DB making this annotation useless. Then, it is mandatory to generate a name
