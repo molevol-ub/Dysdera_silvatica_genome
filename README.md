@@ -9,7 +9,9 @@ We include several scripts in perl, python or R. Some scripts might need additio
 In some cases we include additional information within each script according the parameters employed or the data we used. All necessary files to reproduce results are included as supplementary information deposited in the GigaDB repository (link) in the paper associated to this publication.
 
 # Citation
-"The draft genome sequence of the spider Dysdera silvatica (Araneae, Dysderidae): A valuable resource for functional and evolutionary genomic studies in chelicerates" Sánchez-Herrero J. F., Frías-López C., Escuer P., Hinojosa-Alvarez S., Arnedo M.A., Sánchez-Gracia A., Rozas J. [to add DOI and citation]
+The draft genome sequence of the spider Dysdera silvatica (Araneae, Dysderidae): A valuable resource for functional and evolutionary genomic studies in chelicerates.
+Jose Francisco Sánchez-Herrero, Cristina Frías-López, Paula Escuer, Silvia Hinojosa-Alvarez, Miquel A Arnedo, Alejandro Sánchez-Gracia, Julio Rozas
+GigaScience, Volume 8, Issue 8, August 2019, giz099, https://doi.org/10.1093/gigascience/giz099
 
 # Documentation
 
