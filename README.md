@@ -1,15 +1,23 @@
+# Description
+
+Some of code shown here are small and basic scripts that we basically collect here for the shake of reproducibility. Some others might contain more detailed algorithms. We briefly add a small piece of information on each one in the context of the process it was employed.
+
+We also add information regarding additional supporting data provided within the original journal publication and some concerns about the data and how to manipulate it. 
+
+# Table of Contents
+
 - [Introduction](#introduction)
 - [Citation](#citation)
 - [Additional information](#additional-information)
-  * [Note on GigaScience DB entry](#note-on-gigaScience-db-entry)
+  * [Note on GigaScience DB entry](#note-on-gigascience-db-entry)
     + [Concerns about the data](#concerns-about-the-data)
 - [Documentation](#documentation)
-  * [Sequence manipulation](#sub-heading-1)
-  * [Download NCBI reference genomes](#sub-heading-2)
-  * [High Coverage Regions (HCR)](#sub-heading-3)
-  * [Coverage distribution](#sub-heading-4)
-  * [Annotation](#sub-heading-5)
-  * [Taxonomy profile](#sub-heading-6)
+  * [Sequence manipulation](#sequence-manipulation)
+  * [Download NCBI reference genomes](#download-ncbi-reference-genomes)
+  * [High Coverage Regions](#high-coverage-regions)
+  * [Coverage distribution](#coverage-distribution)
+  * [Annotation](#Annotation)
+  * [Taxonomy profile](#taxonomy-profile)
 - [License](#license)
 
 
@@ -68,8 +76,6 @@ Again, we propose this command to remove these entries from NCBI but some others
 XX
 
 # Documentation
-
-Some of this scripts are small and basic scripts that we basically collect here for the shake of reproducibility. Some others might contain more detailed algorithms. We briefly add a small piece of information on each one in the context of the process it was employed.
 
 ## Sequence manipulation
 
@@ -191,7 +197,7 @@ Command:
 
 This script would take some time according to the amount of samples provided.
 
-## High Coverage Regions (HCR)
+## High Coverage Regions
 
 This high_coverage_islands.pl script generates information regarding high-coverage regions. Given a mean coverage and contig lengths, it determines regions with a high coverage fulfilling different length and deviation from the coverage mean cutoff provided. See additional information in the paper cited. See below examples of High coverage regions.
 
