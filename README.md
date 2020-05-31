@@ -1,4 +1,4 @@
-- [Introduction](#heading)
+- [Introduction](#introduction)
 - [Citation](#heading-1)
 - [Additional information](#heading-2)
   * [Note on GigaScience DB entry](#sub-heading-1)
@@ -10,7 +10,7 @@
   * [Coverage distribution](#sub-heading-4)
   * [Annotation](#sub-heading-5)
   * [Taxonomy profile](#sub-heading-6)
-- [License](#heading-4)
+- [License](#license)
 
 
 # Introduction
