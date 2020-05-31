@@ -1,6 +1,23 @@
-# Description
+# Table of Contents
 
-This is a small git repository of the scripts we used in the genome assembly, annotation and comparative analysis of the Dysdera silvatica genome prokect.
+- [Introduction](#introduction)
+- [Citation](#citation)
+- [Supporting information](#supporting-information)
+  * [Note on GigaScience DB entry](#note-on-gigascience-db-entry)
+    + [Concerns about the data](#concerns-about-the-data)
+- [Documentation](#documentation)
+  * [Sequence manipulation](#sequence-manipulation)
+  * [Download NCBI reference genomes](#download-ncbi-reference-genomes)
+  * [High Coverage Regions](#high-coverage-regions)
+  * [Coverage distribution](#coverage-distribution)
+  * [Annotation](#Annotation)
+  * [Taxonomy profile](#taxonomy-profile)
+- [License](#license)
+
+
+# Introduction
+
+This is a small git repository of the scripts we used in the genome assembly, annotation and comparative analysis of the Dysdera silvatica genome project.
 
 We also add information regarding additional supporting data provided within the original journal publication and some concerns about the data and how to manipulate it. 
 
@@ -10,20 +27,52 @@ In some cases we include additional information within each script according the
 
 Copyright (c) 2019 Evolutionary Genomics & Bioinformatics 
 
-# Table of Contents
+# Citation
+The draft genome sequence of the spider Dysdera silvatica (Araneae, Dysderidae): A valuable resource for functional and evolutionary genomic studies in chelicerates.
+Jose Francisco Sánchez-Herrero, Cristina Frías-López, Paula Escuer, Silvia Hinojosa-Alvarez, Miquel A Arnedo, Alejandro Sánchez-Gracia, Julio Rozas
 
-- [Documentation](#documentation)
-  * [Sequence manipulation](#sequence-manipulation)
-  * [Download NCBI reference genomes](#download-ncbi-reference-genomes)
-  * [High Coverage Regions](#high-coverage-regions)
-  * [Coverage distribution](#coverage-distribution)
-  * [Annotation](#Annotation)
-  * [Taxonomy profile](#taxonomy-profile)
-- [Additional information](#additional-information)
-  * [Note on GigaScience DB entry](#note-on-gigascience-db-entry)
-    + [Concerns about the data](#concerns-about-the-data)
-- [License](#license)
-- [Citation](#citation)
+GigaScience, Volume 8, Issue 8, August 2019, giz099, https://doi.org/10.1093/gigascience/giz099
+
+
+# Supporting information 
+There is additional information regarding this publication and draft reference genome that you would be able to find here:
+
+- NGS raw data file (NCBI BioProject entry): https://www.ncbi.nlm.nih.gov/bioproject/PRJNA475203
+
+- Genome fasta file (NCBI Assembly entry): https://www.ncbi.nlm.nih.gov/assembly/GCA_006491805.1
+
+- Annotation and other supporting information (GigaScience Database Entry): http://gigadb.org/dataset/100628 
+
+
+## Note on GigaScience DB entry
+Within the supporting data available in GigaScience database you should be able to find:
+
+- annotation_Dsilvatica.gff.tar.gz  -  Genome Feature Format (GFF) file containing coding gene annotations
+- annotation_Dsilvatica-proteins.fasta  -  Protein Coding gene translated sequences (fasta format)
+- annotation_Dsilvatica-transcripts.fasta  -  Proteing Coding gene nucleotide sequences (fasta format)
+- Dsilvatica_refGuided_transcriptome.fasta  -  Reference guided transcriptome assembly (fasta format)
+- Dsilvatica_repeats.gff.tar.gz  -  Repeat annotations (txt format)
+- Dsilvatica_repeats-lib.fasta  -  Repeat families (fasta format)
+- seqs2discard.txt  -  Sequences discarded from the original draft while uploading to NCBI (txt format)
+
+### Concerns about the data
+
+We have noticed that there is an incongruency in fasta name headers between the NCBI Genbank genome fasta version and the GFF
+file we provided within the GigaScience DB making this annotation useless. Then, it is mandatory to generate a name
+conversion before any further analysis are processed. 
+
+We propose this command but many others might be available.
+
+XX
+
+Additionally, during the uploading and validation into NCBI Genbank some sequences were discarded due to putative contaminations.
+This sequences are included in seqs2discard.txt file available within the GigaScience DB entry and so they should be discarded too 
+from the GFF file provided there.
+
+Again, we propose this command to remove these entries from NCBI but some others might be available. 
+
+XX
+
 
 # Documentation
 
@@ -418,46 +467,6 @@ e.g. pie chart plot for taxonomy distribution
 
 ![Taxonomy profile](example/taxonomy.png)
 
-# Additional information 
-There is additional information regarding this publication and draft reference genome that you would be able to find here:
-
-- NGS raw data file (NCBI BioProject entry): https://www.ncbi.nlm.nih.gov/bioproject/PRJNA475203
-
-- Genome fasta file (NCBI Assembly entry): https://www.ncbi.nlm.nih.gov/assembly/GCA_006491805.1
-
-- Annotation and other supporting information (GigaScience Database Entry): http://gigadb.org/dataset/100628 
-
-
-## Note on GigaScience DB entry
-Within the supporting data available in GigaScience database you should be able to find:
-
-- annotation_Dsilvatica.gff.tar.gz  -  Genome Feature Format (GFF) file containing coding gene annotations
-- annotation_Dsilvatica-proteins.fasta  -  Protein Coding gene translated sequences (fasta format)
-- annotation_Dsilvatica-transcripts.fasta  -  Proteing Coding gene nucleotide sequences (fasta format)
-- Dsilvatica_refGuided_transcriptome.fasta  -  Reference guided transcriptome assembly (fasta format)
-- Dsilvatica_repeats.gff.tar.gz  -  Repeat annotations (txt format)
-- Dsilvatica_repeats-lib.fasta  -  Repeat families (fasta format)
-- seqs2discard.txt  -  Sequences discarded from the original draft while uploading to NCBI (txt format)
-
-### Concerns about the data
-
-We have noticed that there is an incongruency in fasta name headers between the NCBI Genbank genome fasta version and the GFF
-file we provided within the GigaScience DB making this annotation useless. Then, it is mandatory to generate a name
-conversion before any further analysis are processed. 
-
-We propose this command but many others might be available.
-
-XX
-
-Additionally, during the uploading and validation into NCBI Genbank some sequences were discarded due to putative contaminations.
-This sequences are included in seqs2discard.txt file available within the GigaScience DB entry and so they should be discarded too 
-from the GFF file provided there.
-
-Again, we propose this command to remove these entries from NCBI but some others might be available. 
-
-XX
-
-
 # License
 
 MIT License
@@ -481,10 +490,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-# Citation
-The draft genome sequence of the spider Dysdera silvatica (Araneae, Dysderidae): A valuable resource for functional and evolutionary genomic studies in chelicerates.
-Jose Francisco Sánchez-Herrero, Cristina Frías-López, Paula Escuer, Silvia Hinojosa-Alvarez, Miquel A Arnedo, Alejandro Sánchez-Gracia, Julio Rozas
-
-GigaScience, Volume 8, Issue 8, August 2019, giz099, https://doi.org/10.1093/gigascience/giz099
 
