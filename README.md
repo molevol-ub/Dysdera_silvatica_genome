@@ -61,7 +61,7 @@ We have noticed that there is an incongruency in fasta name headers between the 
 file we provided within the GigaScience DB making this annotation useless. It is mandatory to generate a name
 conversion before any further analysis are processed.
 
-If you donwoload data from NCBI Genbank [website](https://www.ncbi.nlm.nih.gov/assembly/GCA_006491805.1) using the "Download Assembly" buttom
+If you donwload data from NCBI Genbank [website](https://www.ncbi.nlm.nih.gov/assembly/GCA_006491805.1) using the "Download Assembly" buttom
 or using the [ftp site](https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/006/491/805/GCA_006491805.1_Dsil_genome_draft/GCA_006491805.1_Dsil_genome_draft_genomic.fna.gz) you would get a gunzip fasta file.
 
 Decompress it by typing:
@@ -94,7 +94,7 @@ We created a simple script to change the name and keep both IDs within each fast
 
 	perl Dysdera_silvatica_genome/perl/rename_FASTA_seqs.pl GCA_006491805.1_Dsil_genome_draft_genomic.fna > GCA_006491805.1_Dsil_genome_draft_genomic_renamed.fna 
 
-This perl script basically turns QLNU0100000x.x into sequence_x. See an example here:
+This perl script basically permutes QLNU0100000x.x into sequence_x. See an example here:
 
 	>sequence_1 Dysdera silvatica isolate NMH25907 QLNU01000002.1, whole genome shotgun sequence
 	>sequence_2 Dysdera silvatica isolate NMH25907 QLNU01000003.1, whole genome shotgun sequence
@@ -118,7 +118,7 @@ See as an example:
 	==> annotation_Dsilvatica-transcripts.fasta <==
 	>DSIL_00061164-RA transcript offset:353 AED:0.14 eAED:0.14 QI:353|0.83|0.85|1|0.66|0.85|7|42|191
 
-Just as a brief explanation the AED value and the QI are annotation metrics that we would use to test the quality of the annotation generated along the iterative annotation process. See section [Annotation](#Annotation) for additional details.
+Just as a brief explanation the AED value and the QI are annotation metrics that we would use to test the quality of the annotation generated along the iterative annotation process. See section [Annotation](https://github.com/molevol-ub/Dysdera_silvatica_genome#annotation) for additional details.
 
 Also, if you take a look at the transcript example provided, there is a section named offset which refers to the starting position of the coding sequence in the transcript. In this example, the 5' UTR is 353bp and the 3' UTR is 42bp long. Both would have to be trimmed before translating the transcript into a protein. Once they are trimmed you can use frame 0 for the translation. See discussion [here](https://groups.google.com/d/msg/maker-devel/zsyvC0Q4ETY/luaN_N9PJ7oJ).
 
