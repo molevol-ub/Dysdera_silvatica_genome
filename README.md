@@ -58,21 +58,75 @@ Within the supporting data available in GigaScience database you should be able 
 ### Concerns about the data
 
 We have noticed that there is an incongruency in fasta name headers between the NCBI Genbank genome fasta version and the GFF
-file we provided within the GigaScience DB making this annotation useless. Then, it is mandatory to generate a name
-conversion before any further analysis are processed. 
+file we provided within the GigaScience DB making this annotation useless. It is mandatory to generate a name
+conversion before any further analysis are processed.
 
-We propose this command but many others might be available.
+If you donwoload data from NCBI Genbank [website](https://www.ncbi.nlm.nih.gov/assembly/GCA_006491805.1) using the "Download Assembly" buttom
+or using the [ftp site](https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/006/491/805/GCA_006491805.1_Dsil_genome_draft/GCA_006491805.1_Dsil_genome_draft_genomic.fna.gz) you would get a gunzip fasta file.
 
-XX
+Decompress it by typing:
+
+	bash$ gunzip GCA_006491805.1_Dsil_genome_draft_genomic.fna.gz
+
+If you take a look at the fasta headers, by typing:
+
+	grep '>' GCA_006491805.1_Dsil_genome_draft_genomic.fna | head
+
+You can see the first fasta sequences:
+
+	>QLNU01000002.1 Dysdera silvatica isolate NMH25907 sequence_1, whole genome shotgun sequence
+	>QLNU01000003.1 Dysdera silvatica isolate NMH25907 sequence_2, whole genome shotgun sequence
+	>QLNU01000004.1 Dysdera silvatica isolate NMH25907 sequence_3, whole genome shotgun sequence
+	>QLNU01000005.1 Dysdera silvatica isolate NMH25907 sequence_4, whole genome shotgun sequence
+	>QLNU01000006.1 Dysdera silvatica isolate NMH25907 sequence_5, whole genome shotgun sequence
+
+They begin by QLNU01000002.1 and go up to QLNU01065202.1. 
+
+But, why don't they start at QLNU01000001.1?? Because this would be the mitochondrion entry, see additional details here (https://www.ncbi.nlm.nih.gov/nuccore/QLNU01000001.1). But incredibly, this nucleotide entry for the mitochondrion is included at the end of the file.
+
+	>CM016944.1 Dysdera silvatica isolate NMH25907 mitochondrion, complete sequence, whole genome shotgun sequence
+
+We don't know exactly how this is possibly. We as researchers created two differents entries in NCBI assembly when submitting this draft, one for chromosome one for mitochondrion. Now it looks like NCBI/Genbank added all the information into this fasta file, that although it makes biological sense it also makes us necessary to modify GFF annotations generated. But they accommodate data following several standards and we are not here to discuss about that but to provide solutions and further knowledge. 
+
+We originally named our fasta sequences using a simply "sequence_" and counter, and if you take a look at the new header, it is already within it. So, it is necessary to rename fasta sequences and take the mitochondrion information into account. We propose the following commands but many others might be available. 
+
+We created a simple script to change the name and keep both IDs within each fasta header.
+
+	perl Dysdera_silvatica_genome/perl/rename_FASTA_seqs.pl GCA_006491805.1_Dsil_genome_draft_genomic.fna > GCA_006491805.1_Dsil_genome_draft_genomic_renamed.fna 
+
+This perl script basically turns QLNU0100000x.x into sequence_x. See an example here:
+
+	>sequence_1 Dysdera silvatica isolate NMH25907 QLNU01000002.1, whole genome shotgun sequence
+	>sequence_2 Dysdera silvatica isolate NMH25907 QLNU01000003.1, whole genome shotgun sequence
+	>sequence_3 Dysdera silvatica isolate NMH25907 QLNU01000004.1, whole genome shotgun sequence
+	>sequence_4 Dysdera silvatica isolate NMH25907 QLNU01000005.1, whole genome shotgun sequence
+	>sequence_5 Dysdera silvatica isolate NMH25907 QLNU01000006.1, whole genome shotgun sequence
 
 Additionally, during the uploading and validation into NCBI Genbank some sequences were discarded due to putative contaminations.
-This sequences are included in seqs2discard.txt file available within the GigaScience DB entry and so they should be discarded too 
-from the GFF file provided there.
+This sequences are included in seqs2discard.txt file available within the GigaScience DB entry. In the annotation GFF file you might
+reference to these sequences, remove them if you find any problems.
 
-Again, we propose this command to remove these entries from NCBI but some others might be available. 
+## Extract CDS information from GFF and genomic data
 
-XX
+Within the GigaScience DB entry you can additionally download transcript and protein sequences for the annotation generated. This sequences followed the maker tool annotation guidelines (See additional details here: https://www.yandell-lab.org/software/maker.html).
 
+See as an example:
+
+	==> annotation_Dsilvatica-transcripts.fasta <==
+	>DSIL_00061164-RA protein AED:0.14 eAED:0.14 QI:353|0.83|0.85|1|0.66|0.85|7|42|191
+	
+	==> annotation_Dsilvatica-transcripts.fasta <==
+	>DSIL_00061164-RA transcript offset:353 AED:0.14 eAED:0.14 QI:353|0.83|0.85|1|0.66|0.85|7|42|191
+
+Just as a brief explanation the AED value and the QI are annotation metrics that we would use to test the quality of the annotation generated along the iterative annotation process. See section [Annotation](#Annotation) for additional details.
+
+Also, if you take a look at the transcript example provided, there is a section named offset which refers to the starting position of the coding sequence in the transcript. In this example, the 5' UTR is 353bp and the 3' UTR is 42bp long. Both would have to be trimmed before translating the transcript into a protein. Once they are trimmed you can use frame 0 for the translation. See discussion [here](https://groups.google.com/d/msg/maker-devel/zsyvC0Q4ETY/luaN_N9PJ7oJ).
+
+As they mentioned and within maker tool there is an additional script that performs the trimming of the UTRs. 
+
+	fasta_tool annotation_Dsilvatica-transcripts.fasta --trim_maker_utr
+
+To faciliate the information to researchers, we provide CDS sequences for the transcripts annotated from the Dysdera silvatica genome project. See file annotation_Dsilvatica-cds.fasta within the data folder provided in this repository. 
 
 # Documentation
 
