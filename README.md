@@ -33,7 +33,11 @@ There is additional information regarding this publication and draft reference g
 
 - NGS raw data file (NCBI BioProject entry): [PRJNA475203](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA475203)
 
-- Genome fasta file (NCBI WGS entry): [QLNU00000000.1](https://www.ncbi.nlm.nih.gov/genome/?term=txid477319[orgn])
+- The whole-genome shotgun project has been deposited at DDBJ/ENA/GenBank under accession number QLNU00000000. ollow appropiate links for each version:
+	
+	- V1: Initial Draft Assembly: [QLNU00000000.1](https://www.ncbi.nlm.nih.gov/nuccore/1693890462)
+	
+	- V2: Chromosome Level Assembly: [QLNU02000000.1](https://www.ncbi.nlm.nih.gov/genome/?term=txid477319[orgn])
 
 - For each version of the genome assembly see additional details in each version within this git repository:
 
