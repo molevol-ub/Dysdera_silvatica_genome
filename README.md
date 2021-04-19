@@ -35,7 +35,7 @@ There is additional information regarding this publication and draft reference g
 
 - Genome fasta file (NCBI WGS entry): [QLNU00000000.1](https://www.ncbi.nlm.nih.gov/genome/?term=txid477319[orgn])
 
-- For each version of the genome assembly see additional details in each version:
+- For each version of the genome assembly see additional details in each version within this git repository:
 
 	- Initial Draft assembly [v1](https://github.com/molevol-ub/Dysdera_silvatica_genome/blob/master/v1/README.md)
 
