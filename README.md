@@ -45,7 +45,7 @@ There is additional information regarding this publication and draft reference g
 
 MIT License
 
-Copyright (c) 2019 Evolutionary Genomics & Bioinformatics 
+Copyright (c) 2019 - 2021 Evolutionary Genomics & Bioinformatics Lab Universitat de Barcelona
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
