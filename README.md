@@ -26,6 +26,8 @@ Jose Francisco Sánchez-Herrero, Cristina Frías-López, Paula Escuer, Silvia Hi
 - **Chromosome level assembly**
 
 	Chromosome-scale assembly of the Canary Island endemic spider Dysdera silvatica (Arachnida, Araneae) sheds light on the origin and genome structure of chemoreceptor gene families in spiders. Paula Escuer, Vadim A. Pisarenco, Angel A. Fernández-Ruiz, Joel Vizueta, Jose F. Sánchez-Herrero, Miquel A. Arnedo, Alejandro Sánchez-Gracia, Julio Rozas. _Submitted_. 2021
+	
+	Check preprint in here: https://doi.org/10.22541/au.162067941.16111128/v1
 
 
 # Supporting information 
