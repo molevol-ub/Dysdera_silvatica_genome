@@ -27,6 +27,8 @@ GigaScience, Volume 8, Issue 8, August 2019, giz099, https://doi.org/10.1093/gig
 The genome assembly sequence, raw reads as well as annotation files are diposited in NCBI.
 - NGS raw data file (NCBI BioProject entry): 
 - Genome fasta file (NCBI Assembly entry):
+- Annotation and other supporting information ():
+
 
 ## Guide on Annotation files
 - dsil_augustus_annot_func.gff3 - General Feature Format (GFF) file with coding genes annotations
