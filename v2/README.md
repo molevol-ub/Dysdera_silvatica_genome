@@ -7,7 +7,7 @@
 
 
 # Introduction
-  The huge improvement of sequencing techonologies and computational methods over the last few years has allowed to obtain high-quality chromosome-level assemblies. Here, we present some notes on chromosome-level genome assembly of the spider *Dysdera silvatica* (version 2) which represents an improved version of the previous draft genome (version 1).
+The huge improvement of sequencing technologies and computational methods over the last few years has allowed to obtain high-quality chromosome-level assemblies. Here, we present some notes on chromosome-level genome assembly of the spider *Dysdera silvatica* (version 2) which represents an improved version of the previous draft genome (version 1).
 
 # Citation
 version 2:
