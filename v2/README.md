@@ -23,7 +23,7 @@ Jose Francisco Sánchez-Herrero, Cristina Frías-López, Paula Escuer, Silvia Hi
 GigaScience, Volume 8, Issue 8, August 2019, giz099, https://doi.org/10.1093/gigascience/giz099
 
 # Supporting information
-The genome sequence, raw reads as well as annotation files are diposited in NCBI.
+The genome assembly sequence, raw reads as well as annotation files are diposited in NCBI.
 - NGS raw data file (NCBI BioProject entry): 
 - Genome fasta file (NCBI Assembly entry):
 
