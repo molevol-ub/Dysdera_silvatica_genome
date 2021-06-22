@@ -25,7 +25,7 @@ GigaScience, Volume 8, Issue 8, August 2019, giz099, https://doi.org/10.1093/gig
 
 # Supporting information
 The genome assembly sequence, raw reads as well as annotation files are diposited in NCBI.
-- NGS raw data file (NCBI BioProject entry): 
+- NGS raw data file (NCBI BioProject entry): https://www.ncbi.nlm.nih.gov/bioproject/PRJNA475203
 - Genome fasta file (NCBI Assembly entry):
 - Annotation and other supporting information ():
 
