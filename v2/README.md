@@ -15,7 +15,7 @@ version 2:
 Chromosome-scale assembly of the Canary Island endemic spider Dysdera silvatica (Arachnida, Araneae) sheds light on the origin and genome structure of chemoreceptor gene families in spiders. 
 Paula Escuer, Vadim Pisarenco, Angel Fernández-Ruiz, Joel Vizueta, Jose Francisco Sanchez-Herrero, Miquel Arnedo, Alejandro Sánchez-Gracia, Julio Rozas
 
-Molecular Ecology Resources (submitted). https://doi.org/10.22541/au.162067941.16111128/v1
+Molecular Ecology Resources (2021). https://doi.org/10.22541/au.162067941.16111128/v1
 
 version 1:
 The draft genome sequence of the spider Dysdera silvatica (Araneae, Dysderidae): A valuable resource for functional and evolutionary genomic studies in chelicerates.
