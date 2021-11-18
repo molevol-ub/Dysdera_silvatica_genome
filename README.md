@@ -2,7 +2,7 @@
 
 - [Introduction](#introduction)
 - [Citation](#citation)
-- [Supporting information](#supporting-information)
+- [Supporting information](#supporting information)
 - [License](#license)
 
 
