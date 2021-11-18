@@ -1,7 +1,7 @@
 # Table of Contents
 
 - [Introduction](#introduction)
-- [Citation](#citacion)
+- [Citation](#citation)
 - [Supporting information](#supporting-information)
 - [License](#license)
 
@@ -30,7 +30,7 @@ Jose Francisco Sánchez-Herrero, Cristina Frías-López, Paula Escuer, Silvia Hi
 	Check preprint in here: https://doi.org/10.22541/au.162067941.16111128/v1
 
 
-# Supporting information 
+# Supporting-information 
 There is additional information regarding this publication and draft reference genome that you would be able to find here:
 
 - NGS raw data file (NCBI BioProject entry): [PRJNA475203](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA475203)
