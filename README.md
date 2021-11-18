@@ -1,7 +1,7 @@
 # Table of Contents
 
 - [Introduction](#introduction)
-- [Citation](#citation)
+- [Citation](#citacion)
 - [Supporting information](#supporting-information)
 - [License](#license)
 
